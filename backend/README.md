@@ -1,6 +1,6 @@
-# Backend for Elevate Your Writing
+# Backend for Write-Up
 
-This directory contains the backend code for the Elevate Your Writing project.
+This directory contains the backend code for the Write-Up project.
 
 ## Technology Stack
 

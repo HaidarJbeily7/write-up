@@ -1,10 +1,10 @@
-# Elevate Your Writing
+# Write-Up
 
-Welcome to the Elevate Your Writing repository! This project is a SaaS platform that leverages Large Language Models (LLMs) to assess and improve your writing skills for TOEFL and IELTS exams.
+Welcome to the Write-Up repository! This project is a SaaS platform that leverages Large Language Models (LLMs) to assess and improve your writing skills for TOEFL and IELTS exams.
 
 ## About the Project
 
-Elevate Your Writing is designed to:
+Write-Up is designed to:
 - Evaluate your writing based on TOEFL and IELTS criteria
 - Provide detailed feedback on your writing
 - Track your progress over time
@@ -40,7 +40,7 @@ Releases will be tagged and merged into the `main` branch after thorough testing
 
 ## Contributing
 
-We welcome contributions to Elevate Your Writing! Here's how you can contribute:
+We welcome contributions to Write-Up! Here's how you can contribute:
 
 1. Take an issue: Choose an open issue from our issue tracker.
 
@@ -66,7 +66,7 @@ Please ensure you follow our coding standards and write appropriate tests for yo
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
 
-Copyright (C) 2023 Elevate Your Writing
+Copyright (C) 2023 Write-Up
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

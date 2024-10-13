@@ -1,6 +1,6 @@
-# Frontend for Elevate Your Writing
+# Frontend for Write-Up
 
-This directory contains the frontend code for the Elevate Your Writing project.
+This directory contains the frontend code for the Write-Up project.
 
 ## Technology Stack (Proposed)
 
