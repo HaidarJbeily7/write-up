@@ -1,25 +1,47 @@
-# Frontend for Write-Up
+# Frontend for WriteUp
 
-This directory contains the frontend code for the Write-Up project.
+This directory contains the frontend code for the WriteUp project.
 
-## Technology Stack (Proposed)
+## Technology Stack
 
 - React.js
 - TypeScript
-- Redux for state management
-- Styled-components for styling
-- Jest and React Testing Library for unit testing
-- Cypress for end-to-end testing
+- Zustand for state management
+- Mantine for UI components and styling
+- React Router for navigation
 
 ## Project Structure
 
-(Detailed project structure will be added as the frontend development progresses)
+The project structure is organized as follows:
+
+- `src/`
+  - `components/`: Reusable React components
+  - `pages/`: React components representing different pages/routes
+  - `store/`: Zustand store for state management
 
 ## Getting Started
 
+1. Navigate to the frontend directory:
+   ```
+   cd frontend
+   ```
+
+2. Install dependencies:
+   ```
+   yarn install
+   ```
+
+3. Start the development server:
+   ```
+   yarn dev
+   ```
 
 ## Available Scripts
 
+- `yarn dev`: Starts the development server
+- `yarn build`: Builds the app for production
+- `yarn lint`: Runs the linter
+- `yarn preview`: Previews the production build locally
 
 ## Contributing
 
