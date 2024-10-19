@@ -1,21 +1,11 @@
 import { Avatar, Container, Grid, Group, Paper, Stack, Text, Title } from '@mantine/core';
 import { Navbar } from '@/components/Navbar/Navbar';
+import { useUserStore } from '@/store/user';
 
-interface User {
-  name: string;
-  email: string;
-  joinDate: Date;
-  totalWriteUps: number;
-}
 
 export function ProfilePage() {
-  // Simulating user data (replace with actual data fetching logic)
-  const user: User = {
-    name: 'John Doe',
-    email: 'johndoe@example.com',
-    joinDate: new Date('2023-01-01'),
-    totalWriteUps: 15,
-  };
+  
+  const { user } = useUserStore();
 
   return (
     <Grid>

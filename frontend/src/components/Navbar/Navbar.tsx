@@ -8,6 +8,7 @@ import {
 } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { Code, Group, Text } from '@mantine/core';
+import { useUserStore } from '@/store/user';
 import { ColorSchemeToggle } from '../ColorSchemeToggle/ColorSchemeToggle';
 import classes from './Navbar.module.css';
 
@@ -21,6 +22,8 @@ const data = [
 export function Navbar() {
   const [active, setActive] = useState('Home');
   const navigate = useNavigate();
+  const { setIsLoggedIn } = useUserStore();
+
   const links = data.map((item) => (
     <a
       className={classes.link}
@@ -58,7 +61,14 @@ export function Navbar() {
           <ColorSchemeToggle />
         </Group>
 
-        <a href="#" className={classes.link} onClick={(event) => event.preventDefault()}>
+        <a
+          href="#"
+          className={classes.link}
+          onClick={(event) => {
+            event.preventDefault();
+            setIsLoggedIn(false);
+          }}
+        >
           <IconLogout className={classes.linkIcon} stroke={1.5} />
           <span>Logout</span>
         </a>

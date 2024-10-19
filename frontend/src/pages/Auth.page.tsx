@@ -19,7 +19,7 @@ export function SigninPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const { setUser } = useUserStore();
+  const { setUser, setIsLoggedIn } = useUserStore();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,6 +31,7 @@ export function SigninPage() {
         joinDate: new Date(),
         totalWriteUps: 0,
       });
+      setIsLoggedIn(true)
       navigate('/dashboard');
     } else {
       // Simulating registration

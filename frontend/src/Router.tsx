@@ -8,7 +8,7 @@ import { SubscriptionPage } from './pages/Subscription.page';
 import { useUserStore } from './store/user';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const isAuth = useUserStore((state) => state.user.name !== '');
+  const isAuth = useUserStore((state) => state.isLoggedIn);
   return isAuth ? children : <Navigate to="/auth" replace />;
 };
 
