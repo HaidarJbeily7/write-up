@@ -2,9 +2,7 @@ import { Avatar, Container, Grid, Group, Paper, Stack, Text, Title } from '@mant
 import { Navbar } from '@/components/Navbar/Navbar';
 import { useUserStore } from '@/store/user';
 
-
 export function ProfilePage() {
-  
   const { user } = useUserStore();
 
   return (

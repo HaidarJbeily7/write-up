@@ -31,7 +31,7 @@ export function SigninPage() {
         joinDate: new Date(),
         totalWriteUps: 0,
       });
-      setIsLoggedIn(true)
+      setIsLoggedIn(true);
       navigate('/dashboard');
     } else {
       // Simulating registration
