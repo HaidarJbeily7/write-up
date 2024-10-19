@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "write-up-backend"
+version = "0.1.0"
+description = "A SaaS platform that leverages Large Language Models (LLMs) to assess and improve your writing skills for TOEFL and IELTS exams"
+authors = ["HamadaSalhab <hamada.a.salhab@gmail.com>"]
+license = "GPL-3.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = {extras = ["standard"], version = "^0.115.2"}
+pydantic = "^2.9.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
