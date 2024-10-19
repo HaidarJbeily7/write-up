@@ -34,7 +34,7 @@ This directory contains the backend code for the Write-Up project.
 
 5. Run the FastAPI server:
    ```
-   fastapi dev write_up_api.web
+   fastapi dev write_up_api
    ```
 
 ## Database Migrations
