@@ -1,3 +1,5 @@
+from write_up_api.common.config import settings
+from dotenv import load_dotenv
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -6,6 +8,10 @@ from sqlalchemy import pool
 from alembic import context
 
 from sqlmodel import SQLModel
+
+# Load environment variables
+load_dotenv(override=True)
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
@@ -16,8 +22,11 @@ fileConfig(config.config_file_name)
 
 from write_up_api.features.user.models import User
 
-target_metadata = SQLModel.metadata 
+target_metadata = SQLModel.metadata
 
+
+# Set sqlalchemy.url
+config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 
 
 def run_migrations_offline():
