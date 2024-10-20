@@ -7,16 +7,17 @@ license = "GPL-3.0"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.11"
 fastapi = {extras = ["standard"], version = "^0.115.2"}
 pydantic = "^2.9.2"
 scalar-fastapi = "^1.0.3"
-jose = "^1.0.0"
 pydantic-settings = "^2.6.0"
 mysqlclient = "^2.2.4"
 pymysql = "^1.1.1"
 sqlmodel = "^0.0.22"
 alembic = "^1.13.3"
+pyjwt = "^2.9.0"
+passlib = "^1.7.4"
 
 
 [build-system]
