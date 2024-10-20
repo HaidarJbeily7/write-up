@@ -3,6 +3,7 @@ import { SigninPage } from './pages/Auth.page';
 import { DashboardPage } from './pages/Dashborad.page';
 import { HistoryPage } from './pages/History.page';
 import { HomePage } from './pages/Home.page';
+import { PaymentSuccessPage } from './pages/PaymentSuccess.page';
 import { ProfilePage } from './pages/Profile.page';
 import { SubscriptionPage } from './pages/Subscription.page';
 import { useUserStore } from './store/user';
@@ -50,6 +51,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <SubscriptionPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/subscription/success',
+    element: (
+      <ProtectedRoute>
+        <PaymentSuccessPage />
       </ProtectedRoute>
     ),
   },
