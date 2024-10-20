@@ -4,8 +4,9 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'backend/**'
+      - 18/chore-continuous-deployment-cd-for-backend
+    # paths:
+    #   - 'backend/**'
   workflow_dispatch:
 
 jobs:
@@ -15,15 +16,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python version
-        uses: actions/setup-python@v1
+      - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: 3.12
+          cache: poetry
 
-      - name: Install Poetry
-        run: |
-          pip install 'poetry>=1.8.0,<1.9.0'
-          poetry config virtualenvs.create false
+
+      - name: Install poetry
+        run: pipx install poetry
 
       - name: Install dependencies
         run: |
