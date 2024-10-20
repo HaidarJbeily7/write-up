@@ -19,6 +19,7 @@ app = FastAPI(
     redoc_url=None,
     title="Write-Up API",
     description="API for Write-Up",
+    version=settings.VERSION,
     lifespan=lifespan
 )
 

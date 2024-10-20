@@ -19,6 +19,7 @@ alembic = "^1.13.3"
 pyjwt = "^2.9.0"
 passlib = "^1.7.4"
 requests = "^2.32.3"
+pandas = "^2.2.3"
 
 
 [build-system]
