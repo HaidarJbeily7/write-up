@@ -4,9 +4,8 @@ on:
   push:
     branches:
       - main
-      - 18/chore-continuous-deployment-cd-for-backend
-    # paths:
-    #   - 'backend/**'
+    paths:
+      - 'backend/**'
   workflow_dispatch:
 
 jobs:
@@ -30,6 +29,11 @@ jobs:
           poetry install --no-dev --no-root
 
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
+      - name: Create .env file
+        run: |
+          cd backend
+          echo "${{ secrets.ENV_FILE }}" > .env
+
       - name: Zip artifact for deployment
         run: |
           cd backend
