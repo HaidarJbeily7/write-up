@@ -22,7 +22,10 @@ def load_ielts_task1_topics():
                 question=row['question'],
                 category=row['category'],
                 exam_type=ExamType.IELTS,
-                difficulty_level=row.get("difficulty_level")
+                difficulty_level=row.get("difficulty_level"),
+                topic_metadata={
+                    "task_type": "Task 1"
+                }
             )
             topics.append(topic)
 
