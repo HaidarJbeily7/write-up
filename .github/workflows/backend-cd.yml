@@ -27,7 +27,6 @@ jobs:
       - name: Install dependencies
         run: |
           cd backend
-          poetry config experimental.new-installer false
           poetry install --no-dev --no-root
 
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
