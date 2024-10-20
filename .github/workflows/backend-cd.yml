@@ -15,15 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python version
-        uses: actions/setup-python@v1
-        with:
-          python-version: '3.11'
+      - name: Install poetry
+        run: pipx install poetry
 
-      - name: Install Poetry
-        run: |
-          pip install 'poetry>=1.8.0,<1.9.0'
-          poetry config virtualenvs.create false
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+          cache: poetry
 
       - name: Install dependencies
         run: |
@@ -31,6 +29,11 @@ jobs:
           poetry install --no-dev --no-root
 
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
+      - name: Create .env file
+        run: |
+          cd backend
+          echo "${{ secrets.ENV_FILE }}" > .env
+
       - name: Zip artifact for deployment
         run: |
           cd backend
