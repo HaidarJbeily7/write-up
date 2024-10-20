@@ -21,6 +21,7 @@ config = context.config
 fileConfig(config.config_file_name)
 
 from write_up_api.features.user.models import User
+from write_up_api.features.topic.models import Topic
 
 target_metadata = SQLModel.metadata
 
