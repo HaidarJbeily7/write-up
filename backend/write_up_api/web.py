@@ -3,12 +3,23 @@ from fastapi.middleware.cors import CORSMiddleware
 from .features import auth_router, user_router, topic_router
 from scalar_fastapi import get_scalar_api_reference
 from .common.config import settings
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    from .features.topic.utils import load_ielts_task1_topics
+    print("Initializing topics")
+    load_ielts_task1_topics()
+    yield
+    # Shutdown
 
 app = FastAPI(
     docs_url="/swagger",
     redoc_url=None,
     title="Write-Up API",
     description="API for Write-Up",
+    lifespan=lifespan
 )
 
 # Add CORS middleware
@@ -36,5 +47,4 @@ async def docs():
         title="Write-Up API",
     )
 
-from .common.config import settings
 print(settings.DATABASE_URL)

@@ -1,33 +1,26 @@
-from pydantic import BaseModel, EmailStr, Field
+from sqlmodel import Field, SQLModel
 from typing import Optional
-from datetime import datetime
+from enum import Enum
 
-# FIXME: This is a mock model for now
-class User(BaseModel):
-    id: str = Field(..., description="Unique identifier for the user")
-    username: str = Field(..., min_length=3, max_length=50, description="User's username")
-    email: EmailStr = Field(..., description="User's email address")
-    full_name: Optional[str] = Field(None, max_length=100, description="User's full name")
-    created_at: datetime = Field(default_factory=datetime.utcnow, description="Timestamp of user creation")
-    is_active: bool = Field(default=True, description="Whether the user account is active")
-    
+class ExamType(str, Enum):
+    TOEFL = "TOEFL"
+    IELTS = "IELTS"
+
+class Topic(SQLModel, table=True):
+    __tablename__ = 'topics'
+
+    id: str = Field(primary_key=True, index=True)
+    question: str = Field(index=True)
+    category: str = Field(index=True)
+    exam_type: ExamType
+    difficulty_level: Optional[int] = Field(default=None)
+
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
-                "id": "user123",
-                "username": "johndoe",
-                "email": "john.doe@example.com",
-                "full_name": "John Doe",
-                "created_at": "2023-04-15T10:30:00Z",
-                "is_active": True
+                "id": "topic123",
+                "category": "Education",
+                "exam_type": "IELTS",
+                "difficulty_level": 5
             }
         }
-
-class UserRegistration(BaseModel):
-    username: str
-    email: str
-    password: str
-
-class UserLogin(BaseModel):
-    username: str
-    password: str
