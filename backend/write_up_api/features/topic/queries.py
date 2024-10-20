@@ -24,3 +24,9 @@ def get_filtered_topics(
 
         return paginate(session, query, params=params)
 
+
+def get_topic_by_id(topic_id: str) -> Optional[Topic]:
+    with Session(db_engine) as session:
+        # TODO: This is hardcoded for IELTS task 1. Need to change it when we have more task types
+        topic = session.get(Topic, f"ielts-task1-topic-{topic_id}")
+        return topic
