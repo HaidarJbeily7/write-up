@@ -5024,7 +5024,6 @@ __metadata:
     react: "npm:^18.3.1"
     react-dom: "npm:^18.3.1"
     react-google-button: "npm:^0.8.0"
-    react-google-signin-button: "npm:^1.1.0"
     react-query: "npm:^3.39.3"
     react-router-dom: "npm:^6.27.0"
     storybook: "npm:^8.3.5"
@@ -6012,16 +6011,6 @@ __metadata:
   peerDependencies:
     react: ">= 16.8.0"
   checksum: 10c0/75fa35a0cb413b91cb0a1e49b713c88d81067f94ce8937b860dd9af89973b7224aecd8b6a2083a042d481d68fcad44b9606d20f6b6aeaaa7becb79654bf0da2b
-  languageName: node
-  linkType: hard
-
-"react-google-signin-button@npm:^1.1.0":
-  version: 1.1.0
-  resolution: "react-google-signin-button@npm:1.1.0"
-  peerDependencies:
-    react: ">=16.8.0"
-    react-dom: ">=16.8.0"
-  checksum: 10c0/9a8ceb0237b5dd1f071205a3c7f982b26c0989e5b973df5bea6120ba12711841e28bbc0081c6aca381b5b5559ede6a3b22a60e5f03edac2bc599cb336755bc18
   languageName: node
   linkType: hard
 
