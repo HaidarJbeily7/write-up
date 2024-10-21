@@ -3,6 +3,7 @@ from sqlmodel import Session, select
 from .models import Topic, ExamType
 from ...common.db_engine import db_engine
 from typing import List
+import uuid
 
 
 def load_ielts_task1_topics():
@@ -15,21 +16,23 @@ def load_ielts_task1_topics():
         # Remove empty rows
         df = df[df.astype(bool).sum(axis=1) > 0]
 
-        for i, row in df.iterrows():
-            topic_id = f"ielts-task1-topic-{i}"
+        for _, row in df.iterrows():
             topic = Topic(
-                id=topic_id,
+                id=uuid.uuid4(),
                 question=row['question'],
                 category=row['category'],
                 exam_type=ExamType.IELTS,
-                difficulty_level=row.get("difficulty_level")
+                difficulty_level=row.get("difficulty_level"),
+                topic_metadata={
+                    "task_type": "Task 1"
+                }
             )
             topics.append(topic)
 
     with Session(db_engine) as session:
-        existing_topics = session.exec(select(Topic.id)).all()
+        existing_topics = session.exec(select(Topic.question)).all()
         new_topics = [
-            topic for topic in topics if topic.id not in existing_topics]
+            topic for topic in topics if topic.question not in existing_topics]
         session.add_all(new_topics)
         session.commit()
 
@@ -39,6 +42,6 @@ def load_ielts_task1_topics():
 def initialize_topics():
     with Session(db_engine) as session:
         if session.exec(select(Topic)).first() is None:
-            load_ielts_topics()
+            load_ielts_task1_topics()
         else:
             print("Topics already exist in the database. Skipping initialization.")

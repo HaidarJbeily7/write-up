@@ -8,9 +8,9 @@ from contextlib import asynccontextmanager
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    from .features.topic.utils import load_ielts_task1_topics
+    from .features.topic.utils import initialize_topics
     print("Initializing topics")
-    load_ielts_task1_topics()
+    initialize_topics()
     yield
     # Shutdown
 
