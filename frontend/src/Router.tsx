@@ -6,6 +6,7 @@ import { HomePage } from './pages/Home.page';
 import { PaymentSuccessPage } from './pages/PaymentSuccess.page';
 import { ProfilePage } from './pages/Profile.page';
 import { SubscriptionPage } from './pages/Subscription.page';
+import { VerifyLoginPage } from './pages/VerifyLogin.page';
 import { useUserStore } from './store/user';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
   {
     path: '/auth',
     element: <SigninPage />,
+  },
+  {
+    path: '/verify-login',
+    element: <VerifyLoginPage />,
   },
   {
     path: '/dashboard',
