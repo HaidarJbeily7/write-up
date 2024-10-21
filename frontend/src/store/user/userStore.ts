@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 
 interface User {
-  name: string;
+  id: string;
   email: string;
+  fullname: string;
   joinDate: Date;
   totalWriteUps: number;
 }
@@ -26,7 +27,8 @@ const getInitialUser = (): User => {
     };
   }
   return {
-    name: '',
+    id: '',
+    fullname: '',
     email: '',
     joinDate: new Date(),
     totalWriteUps: 0,
@@ -52,8 +54,9 @@ export const useUserStore = create<UserSlice>((set) => ({
   logout: () => {
     set({
       user: {
-        name: '',
+        id: '',
         email: '',
+        fullname: '',
         joinDate: new Date(),
         totalWriteUps: 0,
       },

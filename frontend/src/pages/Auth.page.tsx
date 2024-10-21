@@ -1,86 +1,36 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import {
-  Button,
-  Container,
-  Group,
-  Paper,
-  PasswordInput,
-  Stack,
-  Text,
-  TextInput,
-  Title,
-} from '@mantine/core';
-import { useUserStore } from '@/store/user';
+import axios from 'axios';
+import GoogleButton from 'react-google-button';
+import { Container, Paper, Stack, Title } from '@mantine/core';
 
 export function SigninPage() {
-  const [isLogin, setIsLogin] = useState(true);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate();
-  const { setUser, setIsLoggedIn } = useUserStore();
+  const handleGoogleLogin = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/login/google`,
+        { withCredentials: true }
+      );
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isLogin) {
-      // Simulating login
-      setUser({
-        name: 'Haidar',
-        email: 'haidar@gmail.com',
-        joinDate: new Date(),
-        totalWriteUps: 0,
-      });
-      setIsLoggedIn(true);
-      navigate('/dashboard');
-    } else {
-      // Simulating registration
-      setUser({ name, email, joinDate: new Date(), totalWriteUps: 0 });
-      navigate('/dashboard');
+      if (response.data.url) {
+        // Redirect to Google's login page
+        window.location.href = response.data.url;
+      }
+    } catch (error) {
+      throw new Error(
+        `Failed to get a login link: ${error instanceof Error ? error.message : error}`
+      );
     }
   };
 
   return (
-    <Container size="sm">
+    <Container>
       <Title order={1} mt="xl" mb="xl">
-        {isLogin ? 'Sign In' : 'Register'}
+        Sign In with Google
       </Title>
       <Paper shadow="xs" p="xl">
-        <form onSubmit={handleSubmit}>
-          <Stack>
-            {!isLogin && (
-              <TextInput
-                label="Name"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            )}
-            <TextInput
-              label="Email"
-              required
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <PasswordInput
-              label="Password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button type="submit" fullWidth mt="md">
-              {isLogin ? 'Sign In' : 'Register'}
-            </Button>
-          </Stack>
-        </form>
+        <Stack>
+          <GoogleButton onClick={handleGoogleLogin} />
+        </Stack>
       </Paper>
-      <Group mt="md">
-        <Text>{isLogin ? "Don't have an account?" : 'Already have an account?'}</Text>
-        <Button variant="subtle" onClick={() => setIsLogin(!isLogin)}>
-          {isLogin ? 'Register' : 'Sign In'}
-        </Button>
-      </Group>
     </Container>
   );
 }
