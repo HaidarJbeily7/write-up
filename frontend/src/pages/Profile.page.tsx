@@ -20,7 +20,7 @@ export function ProfilePage() {
             </Avatar>
             <Stack>
               <Text size="xl" fw={700}>
-                {user.name}
+                {user.fullname}
               </Text>
               <Text>{user.email}</Text>
               <Text size="sm" c="dimmed">

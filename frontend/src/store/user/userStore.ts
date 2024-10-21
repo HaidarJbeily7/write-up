@@ -4,6 +4,8 @@ interface User {
   id: string;
   email: string;
   fullname: string;
+  joinDate: Date;
+  totalWriteUps: number;
 }
 
 interface UserSlice {
@@ -28,6 +30,8 @@ const getInitialUser = (): User => {
     id: '',
     fullname: '',
     email: '',
+    joinDate: new Date(),
+    totalWriteUps: 0,
   };
 };
 
@@ -53,6 +57,8 @@ export const useUserStore = create<UserSlice>((set) => ({
         id: '',
         email: '',
         fullname: '',
+        joinDate: new Date(),
+        totalWriteUps: 0,
       },
       isLoggedIn: false,
     });
