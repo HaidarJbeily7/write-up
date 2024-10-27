@@ -40,8 +40,11 @@ def load_ielts_task1_topics():
 
 
 def initialize_topics():
-    with Session(db_engine) as session:
-        if session.exec(select(Topic)).first() is None:
-            load_ielts_task1_topics()
-        else:
-            print("Topics already exist in the database. Skipping initialization.")
+    try:
+        with Session(db_engine) as session:
+            if session.exec(select(Topic)).first() is None:
+                load_ielts_task1_topics()
+            else:
+                print("Topics already exist in the database. Skipping initialization.")
+    except Exception as e:
+        print(f"Error initializing topics: {e}")
