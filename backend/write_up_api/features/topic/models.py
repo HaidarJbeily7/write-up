@@ -40,17 +40,17 @@ class TopicSubmission(SQLModel, table=True):
 
     id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True, index=True)
     user_id: str = Field(foreign_key="users.id")
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow, sa_column_kwargs={"onupdate": datetime.utcnow})
     topic_id: str = Field(foreign_key="topics.id")
     answer: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow, sa_column_kwargs={"onupdate": datetime.utcnow})
 
 class TopicSubmissionRequest(BaseModel):
     answer: str
 
 class TopicSubmissionResponse(BaseModel):
     id: str
-    created_at: datetime
-    updated_at: datetime
     topic_id: str
     answer: str
+    created_at: datetime
+    updated_at: datetime

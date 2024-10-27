@@ -1,9 +1,7 @@
-from csv import DictReader
 from sqlmodel import Session, select
 from .models import Topic, ExamType
 from ...common.db_engine import db_engine
 from typing import List
-import uuid
 
 
 def load_ielts_task1_topics():
@@ -18,7 +16,6 @@ def load_ielts_task1_topics():
 
         for _, row in df.iterrows():
             topic = Topic(
-                id=uuid.uuid4(),
                 question=row['question'],
                 category=row['category'],
                 exam_type=ExamType.IELTS,
