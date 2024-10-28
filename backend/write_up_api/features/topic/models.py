@@ -1,7 +1,7 @@
 from sqlmodel import Field, SQLModel
 from typing import Optional
 from enum import Enum
-from uuid import UUID, uuid4
+import uuid
 from sqlalchemy import JSON
 
 class ExamType(str, Enum):
@@ -11,7 +11,7 @@ class ExamType(str, Enum):
 class Topic(SQLModel, table=True):
     __tablename__ = 'topics'
 
-    id: UUID = Field(default_factory=uuid4, primary_key=True, index=True)
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True, index=True)
     question: str = Field(index=True)
     category: str = Field(index=True)
     exam_type: ExamType

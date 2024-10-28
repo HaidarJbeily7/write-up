@@ -28,5 +28,5 @@ def get_filtered_topics(
 
 def get_topic_by_id(topic_id: str) -> Optional[Topic]:
     with Session(db_engine) as session:
-        topic = session.get(Topic, UUID(topic_id))
+        topic = session.get(Topic, topic_id)
         return topic
