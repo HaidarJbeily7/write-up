@@ -1,7 +1,7 @@
 """Add metadata field to column
 
 Revision ID: df5ed3dc846d
-Revises: 1cbf8d935f05
+Revises: cdec8acde33f
 Create Date: 2024-10-20 23:37:30.476714
 
 """
@@ -12,7 +12,7 @@ import sqlmodel
 
 # revision identifiers, used by Alembic.
 revision = 'df5ed3dc846d'
-down_revision = '1cbf8d935f05'
+down_revision = 'cdec8acde33f'
 branch_labels = None
 depends_on = None
 

@@ -4,6 +4,7 @@ import uuid
 from sqlmodel import Field, SQLModel
 from typing import Optional
 from enum import Enum
+import uuid
 from sqlalchemy import JSON
 
 class ExamType(str, Enum):
