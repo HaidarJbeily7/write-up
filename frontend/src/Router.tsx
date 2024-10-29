@@ -6,6 +6,7 @@ import { HomePage } from './pages/Home.page';
 import { PaymentSuccessPage } from './pages/PaymentSuccess.page';
 import { ProfilePage } from './pages/Profile.page';
 import { SubscriptionPage } from './pages/Subscription.page';
+import { TopicsPage } from './pages/Topics.page';
 import { VerifyLoginPage } from './pages/VerifyLogin.page';
 import { useUserStore } from './store/user';
 
@@ -32,6 +33,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <DashboardPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/topics',
+    element: (
+      <ProtectedRoute>
+        <TopicsPage />
       </ProtectedRoute>
     ),
   },
