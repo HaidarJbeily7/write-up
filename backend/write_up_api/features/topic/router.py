@@ -1,8 +1,10 @@
-from fastapi import APIRouter, HTTPException, Query, Depends
+from fastapi import APIRouter, HTTPException, Path, Query, Depends
 from fastapi_pagination import Page, Params
-from typing import List, Optional
-from .models import Topic, ExamType
-from .queries import get_filtered_topics, get_topic_by_id
+from typing import Annotated, Optional
+
+from ..user.queries import get_user_by_id
+from .models import Topic, ExamType, TopicSubmission, TopicSubmissionRequest, TopicSubmissionResponse
+from .queries import create_topic_submission, get_filtered_topics, get_topic_by_id
 
 topic_router: APIRouter = APIRouter(tags=["topic"])
 
@@ -23,3 +25,34 @@ async def get_topic(topic_id: str) -> Topic:
     if topic is None:
         raise HTTPException(status_code=404, detail="Topic not found")
     return topic
+
+
+@topic_router.post("/{topic_id}/answers", response_model=TopicSubmissionResponse)
+async def submit_answer(
+    topic_id: Annotated[str, Path(description="The ID of the topic to submit an answer for")],
+    user_id: Annotated[str, Query(description="The ID of the user submitting the answer")],
+    data: TopicSubmissionRequest
+) -> TopicSubmissionResponse:
+    try:
+        # Verify user exists
+        user = get_user_by_id(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Verify topic exists
+        topic = get_topic_by_id(topic_id)
+        if not topic:
+            raise HTTPException(status_code=404, detail="Topic not found")
+
+        answer = data.answer
+        if not answer:
+            raise HTTPException(
+                status_code=400, detail="Answer is required in the request body")
+
+        topic_submission = TopicSubmission(
+            topic_id=topic_id, answer=answer, user_id=user_id)
+        return create_topic_submission(topic_submission)
+
+    except Exception as e:
+        print(f"Something went wrong: {e}")
+        raise

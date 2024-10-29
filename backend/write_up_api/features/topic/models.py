@@ -1,3 +1,6 @@
+from datetime import datetime
+from pydantic import BaseModel
+import uuid
 from sqlmodel import Field, SQLModel
 from typing import Optional
 from enum import Enum
@@ -32,3 +35,23 @@ class Topic(SQLModel, table=True):
                 }
             }
         }
+
+class TopicSubmission(SQLModel, table=True):
+    __tablename__ = 'topic_submissions'
+
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True, index=True)
+    user_id: str = Field(foreign_key="users.id")
+    topic_id: str = Field(foreign_key="topics.id")
+    answer: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow, sa_column_kwargs={"onupdate": datetime.utcnow})
+
+class TopicSubmissionRequest(BaseModel):
+    answer: str
+
+class TopicSubmissionResponse(BaseModel):
+    id: str
+    topic_id: str
+    answer: str
+    created_at: datetime
+    updated_at: datetime

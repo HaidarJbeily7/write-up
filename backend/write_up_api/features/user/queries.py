@@ -25,3 +25,13 @@ def get_user_by_email(email: str) -> User | None:
         # Log the error or handle it as needed
         print(f"Database connection error: {e}")
         raise
+
+
+def get_user_by_id(user_id: str) -> User | None:
+    try:
+        with Session(db_engine) as session:
+            user = session.get(User, user_id)
+            return user
+    except OperationalError as e:
+        print(f"Database connection error: {e}")
+        raise
