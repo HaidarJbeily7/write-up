@@ -1,6 +1,6 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import { SigninPage } from './pages/Auth.page';
-import { DashboardPage } from './pages/Dashborad.page';
+import { DashboardPage } from './pages/Dashboard.page';
 import { HistoryPage } from './pages/History.page';
 import { HomePage } from './pages/Home.page';
 import { PaymentSuccessPage } from './pages/PaymentSuccess.page';
