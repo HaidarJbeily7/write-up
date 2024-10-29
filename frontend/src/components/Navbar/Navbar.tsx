@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {
+  IconBook,
   IconCreditCard,
   IconDashboard,
   IconHistory,
@@ -14,6 +15,7 @@ import classes from './Navbar.module.css';
 
 const data = [
   { link: '/dashboard', label: 'Dashboard', icon: IconDashboard },
+  { link: '/topics', label: 'Topics', icon: IconBook },
   { link: '/profile', label: 'Profile', icon: IconUser },
   { link: '/history', label: 'History', icon: IconHistory },
   { link: '/subscription', label: 'Subscription', icon: IconCreditCard },
