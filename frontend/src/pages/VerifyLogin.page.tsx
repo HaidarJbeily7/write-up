@@ -19,7 +19,6 @@ export function VerifyLoginPage() {
           const { user, token } = response.data;
           setUser(user);
           setIsLoggedIn(true);
-          localStorage.setItem('user', JSON.stringify(user));
           localStorage.setItem('access_token', token.access_token);
 
           navigate('/dashboard');
