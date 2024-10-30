@@ -1,5 +1,10 @@
+import json
 from sqlmodel import Session, select
-from .models import Topic, ExamType
+
+from .queries import get_topic_from_submission
+
+from .prompts import IELTS_TASK_1_EVALUATION_PROMPT
+from .models import SubmissionEvaluation, Topic, ExamType, TopicSubmission
 from ...common.db_engine import db_engine
 from typing import List
 
@@ -45,3 +50,76 @@ def initialize_topics():
                 print("Topics already exist in the database. Skipping initialization.")
     except Exception as e:
         print(f"Error initializing topics: {e}")
+
+def evaluate_submission(submission: TopicSubmission) -> str:
+    try:
+        from dotenv import load_dotenv
+        from julep import Julep
+        from ...common.config import settings
+
+
+        topic = get_topic_from_submission(submission)
+
+        load_dotenv(override=True)
+        
+        julep_api_key = settings.JULEP_API_KEY
+        if not julep_api_key:
+            raise ValueError("JULEP_API_KEY environment variable not set")
+            
+        openai_api_key = settings.OPENAI_API_KEY
+        if not openai_api_key:
+            raise ValueError("OPENAI_API_KEY environment variable not set")
+
+        julep = Julep(api_key=julep_api_key, environment="dev")
+        
+        try:
+            agent = julep.agents.create(
+                name="Steve",
+                about="a helpful assistant that evaluates IELTS Tasks",
+                model="gpt-4o-mini",
+            )
+        except Exception as e:
+            raise RuntimeError(f"Failed to create Julep agent: {str(e)}")
+
+        try:
+            session = julep.sessions.create(
+                agent=agent.id,
+            )
+        except Exception as e:
+            raise RuntimeError(f"Failed to create Julep session: {str(e)}")
+        
+        try:
+            response = julep.sessions.chat(
+                session_id=session.id,
+                x_custom_api_key=openai_api_key,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": IELTS_TASK_1_EVALUATION_PROMPT
+                    },
+                    {
+                        "role": "user",
+                        "content": f"This is the question:\n{topic.question}"
+                    },
+                    {
+                        "role": "user",
+                        "content": f"This is the answer:\n{submission.answer}"
+                    }
+                ]
+            )
+
+            message = response.choices[0].message.content
+            
+            json_part = message.split("```json")[1].split("```")[0]
+
+            return SubmissionEvaluation(**json.loads(json_part))
+        
+        except Exception as e:
+            raise RuntimeError(f"Failed to get chat response: {str(e)}")
+        
+
+    except Exception as e:
+        # Log the error for debugging
+        print(f"Error in evaluate_submission: {str(e)}")
+        # Return a user-friendly error message
+        raise e

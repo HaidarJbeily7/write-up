@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException, Path, Query, Depends
 from fastapi_pagination import Page, Params
 from typing import Annotated, Optional
 
+from .utils import evaluate_submission
+
 from ..user.queries import get_user_by_id
 from .models import Topic, ExamType, TopicSubmission, TopicSubmissionRequest, TopicSubmissionResponse
 from .queries import create_topic_submission, get_filtered_topics, get_topic_by_id
@@ -51,7 +53,16 @@ async def submit_answer(
 
         topic_submission = TopicSubmission(
             topic_id=topic_id, answer=answer, user_id=user_id)
-        return create_topic_submission(topic_submission)
+        
+        evaluation = evaluate_submission(topic_submission)
+        
+        if evaluation is None:
+            raise HTTPException(status_code=500, detail="Failed to evaluate submission")
+
+        response = TopicSubmissionResponse(id=topic_submission.id, topic_id=topic_id, answer=answer,
+                                           created_at=topic_submission.created_at, updated_at=topic_submission.updated_at,
+                                           evaluation=evaluation)
+        return response
 
     except Exception as e:
         print(f"Something went wrong: {e}")

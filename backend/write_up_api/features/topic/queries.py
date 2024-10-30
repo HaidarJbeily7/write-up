@@ -50,3 +50,11 @@ def create_topic_submission(topic_submission: TopicSubmission) -> TopicSubmissio
         # Log the error or handle it as needed
         print(f"Database connection error: {e}")
         raise
+
+def get_topic_from_submission(submission: TopicSubmission) -> Topic:
+    with Session(db_engine) as session:
+        topic = session.exec(select(Topic).where(
+            Topic.id == submission.topic_id)).first()
+        if not topic:
+            raise ValueError("Topic not found")
+        return topic

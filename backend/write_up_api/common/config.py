@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     # PROJECT SETTINGS
     VERSION: str
 
+    # LLM API KEYS
+    OPENAI_API_KEY: str
+    JULEP_API_KEY: str
+
     class Config:
         env_file = ".env"
         case_sensitive = True

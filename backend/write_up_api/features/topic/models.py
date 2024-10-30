@@ -49,9 +49,20 @@ class TopicSubmission(SQLModel, table=True):
 class TopicSubmissionRequest(BaseModel):
     answer: str
 
+class EvaluationMetric(BaseModel):
+    band_score: float
+    feedback: str
+
+class SubmissionEvaluation(BaseModel):
+    task_achievement: EvaluationMetric
+    coherence_and_cohesion: EvaluationMetric
+    lexical_resource: EvaluationMetric
+    grammatical_range_and_accuracy: EvaluationMetric
+    overall: EvaluationMetric
 class TopicSubmissionResponse(BaseModel):
     id: str
     topic_id: str
     answer: str
     created_at: datetime
     updated_at: datetime
+    evaluation: SubmissionEvaluation
