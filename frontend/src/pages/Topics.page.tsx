@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Container, Flex, Pagination, Paper, Skeleton, Text, Title } from '@mantine/core';
+import { Container, Flex, Pagination, Skeleton, Title } from '@mantine/core';
 import { usePagination } from '@mantine/hooks';
 import { Navbar } from '@/components/Navbar/Navbar';
+import TopicCard from '@/components/Topics/topicCard';
 import { Topic } from '@/components/Topics/types';
 
 export function TopicsPage() {
@@ -51,49 +52,13 @@ export function TopicsPage() {
               ? Array.from({ length: pageSize }).map((_, index) => (
                   <Skeleton
                     key={index}
-                    height="300px"
+                    height="350px"
                     width="300px"
                     radius="md"
                     style={{ flexShrink: 0 }}
                   />
                 ))
-              : topics.map((topic) => (
-                  <Paper
-                    key={topic.id}
-                    shadow="md"
-                    p="xl"
-                    radius="md"
-                    style={{
-                      width: '300px',
-                      minHeight: '300px',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      height: '100%',
-                      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                      cursor: 'pointer',
-                    }}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLElement).style.transform = 'scale(1.05)';
-                      (e.currentTarget as HTMLElement).style.boxShadow =
-                        '0 10px 20px rgba(0,0,0,0.2)';
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
-                      (e.currentTarget as HTMLElement).style.boxShadow = 'none';
-                    }}
-                  >
-                    <div style={{ flexGrow: 1 }}>
-                      <Title order={2} style={{ textAlign: 'center' }} mb="md">
-                        {topic.category}
-                      </Title>
-                      <Text size="xl" fw={700} mt="md" style={{ textAlign: 'center' }}>
-                        {topic.exam_type}
-                      </Text>
-                      <Text>{topic.question}</Text>
-                    </div>
-                  </Paper>
-                ))}
+              : topics.map((topic) => <TopicCard topic={topic} />)}
           </div>
         </Container>
         <div style={{ flexGrow: 1 }} />
@@ -103,6 +68,7 @@ export function TopicsPage() {
           size="md"
           disabled={loading}
           style={{ alignSelf: 'center', marginBottom: '2rem' }}
+          mt="xl"
         />
       </Flex>
     </Flex>
