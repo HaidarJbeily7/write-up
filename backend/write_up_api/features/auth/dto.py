@@ -19,6 +19,7 @@ class UserResponse(BaseModel):
     id: str
     fullname: str
     email: str
+    is_active: bool
 
 class RegistrationResponse(BaseModel):
     user: UserResponse

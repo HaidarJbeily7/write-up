@@ -6,15 +6,17 @@ interface User {
   fullname: string;
   joinDate: Date;
   totalWriteUps: number;
+  isActive: boolean;
 }
 
 interface UserSlice {
   user: User;
   isLoggedIn: boolean;
-  setUser: (user: User) => void;
+  setUser: (user: User, isActive: boolean) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
   login: (user: User) => void;
   logout: () => void;
+  setIsActive: (isActive: boolean) => void;
 }
 
 const getInitialUser = (): User => {
@@ -32,15 +34,16 @@ const getInitialUser = (): User => {
     email: '',
     joinDate: new Date(),
     totalWriteUps: 0,
+    isActive: false,
   };
 };
 
 export const useUserStore = create<UserSlice>((set) => ({
   user: getInitialUser(),
   isLoggedIn: localStorage.getItem('isLoggedIn') === 'true',
-  setUser: (user: User) => {
-    set({ user });
-    localStorage.setItem('user', JSON.stringify(user));
+  setUser: (user: User, isActive: boolean) => {
+    set({ user: { ...user, isActive } });
+    localStorage.setItem('user', JSON.stringify({ ...user, isActive }));
   },
   setIsLoggedIn: (isLoggedIn: boolean) => {
     set({ isLoggedIn });
@@ -59,10 +62,19 @@ export const useUserStore = create<UserSlice>((set) => ({
         fullname: '',
         joinDate: new Date(),
         totalWriteUps: 0,
+        isActive: false,
       },
       isLoggedIn: false,
     });
     localStorage.removeItem('user');
     localStorage.removeItem('isLoggedIn');
+  },
+  setIsActive: (isActive: boolean) => {
+    set((state) => ({ user: { ...state.user, isActive } }));
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      localStorage.setItem('user', JSON.stringify({ ...user, isActive }));
+    }
   },
 }));

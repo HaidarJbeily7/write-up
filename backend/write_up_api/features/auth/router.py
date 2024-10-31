@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Request
 from .dto import TokenResponse, UserResponse, LoginResponse
-from ..user.queries import create_user, get_user_by_email
+from ...features.user.queries import create_user, get_user_by_email, create_user_profile
 from ...common.config import settings
 from ...common.dependencies import get_current_user
 from .security import create_access_token
@@ -36,13 +36,13 @@ async def google_callback(request: Request):
     user = get_user_by_email(email)
     if not user:
         user = create_user(email, name)
-    
+        create_user_profile(user.id)
     token = create_access_token(data={"sub": user.email})
-    return LoginResponse(user=UserResponse(id=user.id, fullname=user.full_name, email=user.email), token=TokenResponse(access_token=token, token_type="bearer"))
+    return LoginResponse(user=UserResponse(id=user.id, fullname=user.full_name, email=user.email, is_active=user.is_active), token=TokenResponse(access_token=token, token_type="bearer"))
 
 @auth_router.get("/me", response_model=UserResponse)
 async def get_current_user_info(current_user: UserResponse = Depends(get_current_user)) -> UserResponse:
-    return UserResponse(id=current_user.id, fullname=current_user.full_name, email=current_user.email)
+    return UserResponse(id=current_user.id, fullname=current_user.full_name, email=current_user.email, is_active=current_user.is_active)
 
 
 @auth_router.post("/refresh-token", response_model=TokenResponse)

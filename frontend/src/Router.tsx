@@ -6,6 +6,7 @@ import { HistoryPage } from './pages/History.page';
 import { HomePage } from './pages/Home.page';
 import { PaymentSuccessPage } from './pages/PaymentSuccess.page';
 import { ProfilePage } from './pages/Profile.page';
+import { ProfileEditPage } from './pages/ProfileEdit.page';
 import { SubscriptionPage } from './pages/Subscription.page';
 import { TopicsPage } from './pages/Topics.page';
 import { VerifyLoginPage } from './pages/VerifyLogin.page';
@@ -13,7 +14,22 @@ import { useUserStore } from './store/user';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuth = useUserStore((state) => state.isLoggedIn);
-  return isAuth ? children : <Navigate to="/auth" replace />;
+  const isActive = useUserStore((state) => state.user.isActive);
+  if (!isAuth) {
+    return <Navigate to="/auth" replace />;
+  }
+  if (!isActive) {
+    return <Navigate to="/profile/edit" replace />;
+  }
+  return children;
+};
+
+const ProfileEditRoute = ({ children }: { children: React.ReactNode }) => {
+  const isAuth = useUserStore((state) => state.isLoggedIn);
+  if (!isAuth) {
+    return <Navigate to="/auth" replace />;
+  }
+  return children;
 };
 
 const router = createBrowserRouter([
@@ -67,6 +83,14 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <ProfilePage />
       </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/profile/edit',
+    element: (
+      <ProfileEditRoute>
+        <ProfileEditPage />
+      </ProfileEditRoute>
     ),
   },
   {
