@@ -3,7 +3,8 @@ from fastapi_pagination import Page, Params
 from typing import Annotated, Optional
 
 from .utils import evaluate_submission
-
+from ...common.dependencies import get_current_user
+from ...features.user.models import User
 from ..user.queries import get_user_by_id
 from .models import Topic, ExamType, TopicSubmission, TopicSubmissionRequest, TopicSubmissionResponse
 from .queries import create_topic_submission, get_filtered_topics, get_topic_by_id
@@ -32,14 +33,10 @@ async def get_topic(topic_id: str) -> Topic:
 @topic_router.post("/{topic_id}/answers", response_model=TopicSubmissionResponse)
 async def submit_answer(
     topic_id: Annotated[str, Path(description="The ID of the topic to submit an answer for")],
-    user_id: Annotated[str, Query(description="The ID of the user submitting the answer")],
-    data: TopicSubmissionRequest
+    data: TopicSubmissionRequest,
+    user: User = Depends(get_current_user),
 ) -> TopicSubmissionResponse:
     try:
-        # Verify user exists
-        user = get_user_by_id(user_id)
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
 
         # Verify topic exists
         topic = get_topic_by_id(topic_id)
@@ -52,7 +49,7 @@ async def submit_answer(
                 status_code=400, detail="Answer is required in the request body")
 
         topic_submission = TopicSubmission(
-            topic_id=topic_id, answer=answer, user_id=user_id)
+            topic_id=topic_id, answer=answer, user_id=user.id)
         
         evaluation = evaluate_submission(topic_submission)
         
