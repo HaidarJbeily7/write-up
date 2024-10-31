@@ -46,11 +46,12 @@ class JWTBearer(HTTPBearer):
 
         return isTokenValid
 
-
+from sqlmodel import Session
+from ..common.db_engine import db_engine
 def get_db():
-    # TODO: Implement database session creation
-    # This is a placeholder for the actual database session creation
-    pass
+    with Session(db_engine) as session:
+        yield session
+        
 
 async def get_current_user(token: Annotated[str, Depends(JWTBearer())]) -> User:
     try:

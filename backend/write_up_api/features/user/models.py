@@ -2,6 +2,7 @@ from sqlmodel import Field, SQLModel, create_engine
 from datetime import datetime
 import uuid
 from ...common.config import settings
+from sqlmodel import Relationship
 
 class User(SQLModel, table=True):
     __tablename__ = 'users'

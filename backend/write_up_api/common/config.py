@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str
     JULEP_API_KEY: str
 
+    # STRIPE SETTINGS
+    STRIPE_SECRET_KEY: str
+
     class Config:
         env_file = ".env"
         case_sensitive = True

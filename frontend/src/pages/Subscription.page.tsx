@@ -18,21 +18,11 @@ export function SubscriptionPage() {
   const [loading, setLoading] = useState(false);
 
   const subscriptionPlans: SubscriptionPlan[] = [
-    { name: 'Basic', price: 9.99, features: ['5 WriteUps per month', 'Basic analytics'] },
+    { name: 'Basic', price: 9.99, features: ['10 WriteUps', 'Basic analytics'] },
     {
       name: 'Pro',
       price: 19.99,
-      features: ['Unlimited WriteUps', 'Advanced analytics', 'Priority support'],
-    },
-    {
-      name: 'Enterprise',
-      price: 49.99,
-      features: [
-        'Unlimited WriteUps',
-        'Advanced analytics',
-        'Dedicated support',
-        'Custom integrations',
-      ],
+      features: ['30 WriteUps', 'Advanced analytics', 'Priority support'],
     },
   ];
 
@@ -40,10 +30,15 @@ export function SubscriptionPage() {
     setLoading(true);
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/create-payment-intent`,
-        { plan }
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/subscriptions/create-payment-intent`,
+        { plan },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          },
+        }
       );
-      setClientSecret(response.data.clientSecret);
+      setClientSecret(response.data.client_secret);
     } catch (error) {
       throw new Error(
         `Failed to create payment intent: ${error instanceof Error ? error.message : error}`

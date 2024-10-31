@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .features import auth_router, user_router, topic_router
+from .features import auth_router, user_router, topic_router, subscription_router
 from scalar_fastapi import get_scalar_api_reference
 from .common.config import settings
 from contextlib import asynccontextmanager
@@ -36,6 +36,7 @@ app.add_middleware(
 app.include_router(auth_router, prefix="/api/v1/auth")
 app.include_router(user_router, prefix="/api/v1/users")
 app.include_router(topic_router, prefix="/api/v1/topics")
+app.include_router(subscription_router, prefix="/api/v1/subscriptions")
 
 @app.get("/api/health")
 async def health():

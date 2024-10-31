@@ -22,7 +22,7 @@ fileConfig(config.config_file_name)
 
 from write_up_api.features.user.models import User
 from write_up_api.features.topic.models import Topic
-
+from write_up_api.features.subscription.models import Subscription
 target_metadata = SQLModel.metadata
 
 
