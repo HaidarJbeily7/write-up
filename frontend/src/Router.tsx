@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
+import { AnswerPage } from './pages/Answer.page';
 import { SigninPage } from './pages/Auth.page';
 import { DashboardPage } from './pages/Dashboard.page';
 import { HistoryPage } from './pages/History.page';
@@ -49,6 +50,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <HistoryPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/answer',
+    element: (
+      <ProtectedRoute>
+        <AnswerPage />
       </ProtectedRoute>
     ),
   },
