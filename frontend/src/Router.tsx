@@ -7,6 +7,7 @@ import { HomePage } from './pages/Home.page';
 import { PaymentSuccessPage } from './pages/PaymentSuccess.page';
 import { ProfilePage } from './pages/Profile.page';
 import { ProfileEditPage } from './pages/ProfileEdit.page';
+import { ResultPage } from './pages/Result.page';
 import { SubscriptionPage } from './pages/Subscription.page';
 import { TopicsPage } from './pages/Topics.page';
 import { VerifyLoginPage } from './pages/VerifyLogin.page';
@@ -74,6 +75,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <AnswerPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/result',
+    element: (
+      <ProtectedRoute>
+        <ResultPage />
       </ProtectedRoute>
     ),
   },
