@@ -16,12 +16,12 @@ export default function TopicCard({ topic }: TopicCardGridProps) {
       p="xl"
       radius="md"
       style={{
-        width: '300px',
-        minHeight: '350px',
+        width: '400px',
+        height: '270px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        height: '100%',
+        // height: '100%',
         transition: 'transform 0.3s ease, box-shadow 0.3s ease',
         cursor: 'pointer',
       }}

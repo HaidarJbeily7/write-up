@@ -52,8 +52,8 @@ export function TopicsPage() {
               ? Array.from({ length: pageSize }).map((_, index) => (
                   <Skeleton
                     key={index}
-                    height="350px"
-                    width="300px"
+                    height="270px"
+                    width="400px"
                     radius="md"
                     style={{ flexShrink: 0 }}
                   />
