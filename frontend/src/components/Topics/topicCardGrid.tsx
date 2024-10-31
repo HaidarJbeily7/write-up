@@ -32,7 +32,7 @@ export default function TopicCardGrid({ topics }: TopicCardGridProps) {
     <Card withBorder radius="md" className={classes.card}>
       <Group justify="space-between">
         <Text className={classes.title}>Topics</Text>
-        <Anchor size="xs" c="dimmed" style={{ lineHeight: 1 }}>
+        <Anchor size="xs" c="dimmed" href="/topics" style={{ lineHeight: 1 }}>
           View more
         </Anchor>
       </Group>
