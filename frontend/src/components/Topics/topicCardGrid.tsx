@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import {
   Anchor,
   Card,
@@ -16,9 +17,15 @@ interface TopicCardGridProps {
 
 export default function TopicCardGrid({ topics }: TopicCardGridProps) {
   const theme = useMantineTheme();
+  const navigate = useNavigate();
 
   const items = topics.map((topic) => (
-    <UnstyledButton key={topic.id} className={classes.item} p={8}>
+    <UnstyledButton
+      key={topic.id}
+      className={classes.item}
+      p={8}
+      onClick={() => navigate(`/answer?id=${topic.id}`)}
+    >
       <Text size="sm" c={theme.colors.blue[6]}>
         {topic.exam_type} - {topic.category}
       </Text>
@@ -32,7 +39,7 @@ export default function TopicCardGrid({ topics }: TopicCardGridProps) {
     <Card withBorder radius="md" className={classes.card}>
       <Group justify="space-between">
         <Text className={classes.title}>Topics</Text>
-        <Anchor size="xs" c="dimmed" style={{ lineHeight: 1 }}>
+        <Anchor size="xs" c="dimmed" href="/topics" style={{ lineHeight: 1 }}>
           View more
         </Anchor>
       </Group>
