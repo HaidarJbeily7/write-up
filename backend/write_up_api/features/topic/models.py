@@ -1,33 +1,68 @@
-from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
 from datetime import datetime
+from pydantic import BaseModel
+import uuid
+from sqlmodel import Field, SQLModel
+from typing import Optional
+from enum import Enum
+import uuid
+from sqlalchemy import JSON
 
-# FIXME: This is a mock model for now
-class User(BaseModel):
-    id: str = Field(..., description="Unique identifier for the user")
-    username: str = Field(..., min_length=3, max_length=50, description="User's username")
-    email: EmailStr = Field(..., description="User's email address")
-    full_name: Optional[str] = Field(None, max_length=100, description="User's full name")
-    created_at: datetime = Field(default_factory=datetime.utcnow, description="Timestamp of user creation")
-    is_active: bool = Field(default=True, description="Whether the user account is active")
-    
+class ExamType(str, Enum):
+    TOEFL = "TOEFL"
+    IELTS = "IELTS"
+
+class Topic(SQLModel, table=True):
+    __tablename__ = 'topics'
+
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True, index=True)
+    question: str = Field(index=True)
+    category: str = Field(index=True)
+    exam_type: ExamType
+    difficulty_level: Optional[int] = Field(default=None)
+    topic_metadata: Optional[dict] = Field(default=None, sa_type=JSON)
+
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
-                "id": "user123",
-                "username": "johndoe",
-                "email": "john.doe@example.com",
-                "full_name": "John Doe",
-                "created_at": "2023-04-15T10:30:00Z",
-                "is_active": True
+                "id": "123e4567-e89b-12d3-a456-426614174000",
+                "category": "Education",
+                "exam_type": "IELTS",
+                "difficulty_level": 5,
+                "topic_metadata": {
+                    "source": "Official IELTS practice materials",
+                    "year": 2023,
+                    "task_type": "Task 1"
+                }
             }
         }
 
-class UserRegistration(BaseModel):
-    username: str
-    email: str
-    password: str
+class TopicSubmission(SQLModel, table=True):
+    __tablename__ = 'topic_submissions'
 
-class UserLogin(BaseModel):
-    username: str
-    password: str
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True, index=True)
+    user_id: str = Field(foreign_key="users.id")
+    topic_id: str = Field(foreign_key="topics.id")
+    answer: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow, sa_column_kwargs={"onupdate": datetime.utcnow})
+
+class TopicSubmissionRequest(BaseModel):
+    answer: str
+
+class EvaluationMetric(BaseModel):
+    band_score: float
+    feedback: str
+
+class SubmissionEvaluation(BaseModel):
+    task_achievement: EvaluationMetric
+    coherence_and_cohesion: EvaluationMetric
+    lexical_resource: EvaluationMetric
+    grammatical_range_and_accuracy: EvaluationMetric
+    overall: EvaluationMetric
+class TopicSubmissionResponse(BaseModel):
+    id: str
+    topic_id: str
+    answer: str
+    created_at: datetime
+    updated_at: datetime
+    evaluation: SubmissionEvaluation

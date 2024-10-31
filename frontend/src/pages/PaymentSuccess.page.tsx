@@ -14,10 +14,17 @@ export function PaymentSuccessPage() {
     if (paymentIntent && paymentIntentClientSecret) {
       if (redirectStatus) {
         axios
-          .post(`${import.meta.env.VITE_BACKEND_URL}/payment-success`, {
-            paymentIntent,
-            paymentIntentClientSecret,
-          })
+          .post(
+            `${import.meta.env.VITE_BACKEND_URL}/api/v1/subscriptions/payment-success`,
+            {
+              payment_intent: paymentIntent,
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+              },
+            }
+          )
           .then((response) => {
             console.log('Payment confirmation sent successfully:', response.data);
           })

@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 
-user_router: APIRouter = APIRouter(prefix="/v1/users", tags=["user"])
+user_router: APIRouter = APIRouter(tags=["user"])
 
 @user_router.put("/profile")
 async def update_profile() -> dict:

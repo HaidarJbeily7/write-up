@@ -1,48 +1,52 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from .dto import TokenResponse, UserResponse, RegistrationResponse, LoginResponse, RegistrationRequest
-from ..user.queries import create_user
+from fastapi import APIRouter, Depends, Request
+from .dto import TokenResponse, UserResponse, LoginResponse
+from ..user.queries import create_user, get_user_by_email
+from ...common.config import settings
+from ...common.dependencies import get_current_user
+from .security import create_access_token
+import requests
 
-auth_router: APIRouter = APIRouter(prefix="/v1/auth", tags=["auth"])
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+auth_router: APIRouter = APIRouter(tags=["auth"])
 
-@auth_router.post("/register", response_model=RegistrationResponse)
-async def register(user: RegistrationRequest) -> RegistrationResponse:
-    user =  create_user(user.email, user.fullname)
-    return RegistrationResponse(user=UserResponse(id=user.id, fullname=user.full_name, email=user.email), message="User successfully registered")
+@auth_router.get("/login/google")
+async def login_google():
+    return {
+        "url": f"https://accounts.google.com/o/oauth2/auth?response_type=code&client_id={settings.GOOGLE_CLIENT_ID}&redirect_uri={settings.GOOGLE_REDIRECT_URI}&scope=openid%20profile%20email"
+    }
 
-@auth_router.post("/login", response_model=LoginResponse)
-async def login(form_data: OAuth2PasswordRequestForm = Depends()) -> LoginResponse:
-    # TODO: Implement user login logic
-    # This should include:
-    # 1. Verify username and password
-    # 2. Generate access token
-    # 3. Return user data and token
-    user = UserResponse(id=1, username=form_data.username, email="user@example.com")
-    token = TokenResponse(access_token="dummy_token", token_type="bearer")
-    return LoginResponse(user=user, token=token)
+@auth_router.get("/google/callback")
+async def google_callback(request: Request):
+    code = request.query_params.get("code")
+    token_url = "https://oauth2.googleapis.com/token"
+    data = {
+        "code": code,
+        "client_id": settings.GOOGLE_CLIENT_ID,
+        "client_secret": settings.GOOGLE_CLIENT_SECRET,
+        "redirect_uri": settings.GOOGLE_REDIRECT_URI,
+        "grant_type": "authorization_code"
+    }
+    response = requests.post(token_url, data=data)
+    access_token = response.json().get("access_token")
+    
+    user_info = requests.get("https://www.googleapis.com/oauth2/v2/userinfo", headers={"Authorization": f"Bearer {access_token}"}).json()
+    
+    email = user_info.get("email")
+    name = user_info.get("name")
+    
+    user = get_user_by_email(email)
+    if not user:
+        user = create_user(email, name)
+    
+    token = create_access_token(data={"sub": user.email})
+    return LoginResponse(user=UserResponse(id=user.id, fullname=user.full_name, email=user.email), token=TokenResponse(access_token=token, token_type="bearer"))
 
 @auth_router.get("/me", response_model=UserResponse)
-async def get_current_user(token: str = Depends(oauth2_scheme)) -> UserResponse:
-    # TODO: Implement logic to get current user
-    # This should include:
-    # 1. Verify the token
-    # 2. Fetch and return the user data
-    return UserResponse(id=1, username="current_user", email="user@example.com")
+async def get_current_user_info(current_user: UserResponse = Depends(get_current_user)) -> UserResponse:
+    return UserResponse(id=current_user.id, fullname=current_user.full_name, email=current_user.email)
 
-@auth_router.post("/logout")
-async def logout(token: str = Depends(oauth2_scheme)) -> dict:
-    # TODO: Implement logout logic
-    # This may include:
-    # 1. Invalidate the token
-    # 2. Clear any server-side sessions
-    return {"message": "Successfully logged out"}
 
 @auth_router.post("/refresh-token", response_model=TokenResponse)
-async def refresh_token(token: str = Depends(oauth2_scheme)) -> TokenResponse:
-    # TODO: Implement token refresh logic
-    # This should include:
-    # 1. Verify the current token
-    # 2. Generate and return a new token
-    return TokenResponse(access_token="new_dummy_token", token_type="bearer")
+async def refresh_token(current_user: UserResponse = Depends(get_current_user)) -> TokenResponse:
+    new_token = create_access_token(data={"sub": current_user.email})
+    return TokenResponse(access_token=new_token, token_type="bearer")
 

@@ -13,6 +13,21 @@ class Settings(BaseSettings):
     # CORS settings
     BACKEND_CORS_ORIGINS: list = ["http://localhost:3000", "http://localhost:8080", "http://localhost:5173"]
 
+    # GOOGLE SETTINGS
+    GOOGLE_CLIENT_ID: str
+    GOOGLE_CLIENT_SECRET: str
+    GOOGLE_REDIRECT_URI: str
+    
+    # PROJECT SETTINGS
+    VERSION: str
+
+    # LLM API KEYS
+    OPENAI_API_KEY: str
+    JULEP_API_KEY: str
+
+    # STRIPE SETTINGS
+    STRIPE_SECRET_KEY: str
+
     class Config:
         env_file = ".env"
         case_sensitive = True
