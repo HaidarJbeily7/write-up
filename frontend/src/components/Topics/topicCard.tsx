@@ -8,6 +8,10 @@ interface TopicCardGridProps {
 
 export default function TopicCard({ topic }: TopicCardGridProps) {
   const navigate = useNavigate();
+
+  const truncatedQuestion =
+    topic.question.length > 200 ? `${topic.question.slice(0, 198)}...` : topic.question;
+
   return (
     <Paper
       withBorder
@@ -21,7 +25,6 @@ export default function TopicCard({ topic }: TopicCardGridProps) {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
-        // height: '100%',
         transition: 'transform 0.3s ease, box-shadow 0.3s ease',
         cursor: 'pointer',
       }}
@@ -43,7 +46,7 @@ export default function TopicCard({ topic }: TopicCardGridProps) {
           {topic.exam_type}
         </Text>
         <div style={{ maxHeight: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-          <Text>{topic.question}</Text>
+          <Text>{truncatedQuestion}</Text>
         </div>
       </div>
     </Paper>
