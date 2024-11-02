@@ -14,6 +14,7 @@ def get_filtered_topics(
     exam_type: Optional[ExamType] = None,
     category: Optional[str] = None,
     difficulty_level: Optional[int] = None,
+    paginate: bool = True,
     params: Params = Params()
 ) -> List[Topic]:
     try:
@@ -27,7 +28,9 @@ def get_filtered_topics(
             if difficulty_level:
                 query = query.where(Topic.difficulty_level == difficulty_level)
 
-            return paginate(session, query, params=params)
+            topics = paginate(session, query, params=params) if paginate else session.exec(query).all()
+
+            return topics
     except Exception as e:
         logger.error(f"Database error while getting filtered topics: {e}")
         raise
