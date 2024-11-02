@@ -63,7 +63,7 @@ def add_new_topics_to_db(exam_type: ExamType, task_type: str) -> int:
     file_topics: List[Topic] = get_topics_from_file(exam_type, task_type)
 
     existing_topics: List[Topic] = get_filtered_topics(
-        exam_type=exam_type, task_type=task_type, is_paginated=False)
+        exam_type=exam_type, task_type=task_type)
 
     new_topics = [
         file_topic for file_topic in file_topics 
