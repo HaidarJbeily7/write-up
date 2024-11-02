@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 def get_filtered_topics(
     exam_type: Optional[ExamType] = None,
     category: Optional[str] = None,
+    task_type: Optional[str] = None,
     difficulty_level: Optional[int] = None,
     paginate: bool = True,
     params: Params = Params()
@@ -25,6 +26,9 @@ def get_filtered_topics(
                 query = query.where(Topic.exam_type == exam_type)
             if category:
                 query = query.where(Topic.category == category)
+            if task_type:
+                # FIXME: This is a hack to get the task type from the topic metadata
+                query = query.where(Topic.topic_metadata == f'{{"task_type": "{task_type}"}}')
             if difficulty_level:
                 query = query.where(Topic.difficulty_level == difficulty_level)
 
