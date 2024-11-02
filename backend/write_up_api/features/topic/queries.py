@@ -1,9 +1,13 @@
 from sqlmodel import Session, select
 from typing import List, Optional
+import logging
 from .models import Topic, ExamType, TopicSubmission
 from ...common.db_engine import db_engine
 from fastapi_pagination.ext.sqlalchemy import paginate
 from fastapi_pagination import Params
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_filtered_topics(
@@ -25,8 +29,7 @@ def get_filtered_topics(
 
             return paginate(session, query, params=params)
     except Exception as e:
-        # Log the error or handle it as needed
-        print(f"Database connection error: {e}")
+        logger.error(f"Database error while getting filtered topics: {e}")
         raise
 
 def get_topic_by_id(topic_id: str) -> Optional[Topic]:
@@ -35,8 +38,7 @@ def get_topic_by_id(topic_id: str) -> Optional[Topic]:
             topic = session.get(Topic, topic_id)
             return topic
     except Exception as e:
-        # Log the error or handle it as needed
-        print(f"Database connection error: {e}")
+        logger.error(f"Database error while getting topic by id: {e}")
         raise
 
 def create_topic_submission(topic_submission: TopicSubmission) -> TopicSubmission:
@@ -47,8 +49,7 @@ def create_topic_submission(topic_submission: TopicSubmission) -> TopicSubmissio
             session.refresh(topic_submission)
             return topic_submission
     except Exception as e:
-        # Log the error or handle it as needed
-        print(f"Database connection error: {e}")
+        logger.error(f"Database error while creating new submission: {e}")
         raise
 
 def get_topic_from_submission(submission: TopicSubmission) -> Topic:

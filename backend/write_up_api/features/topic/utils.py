@@ -1,4 +1,5 @@
 import json
+import logging
 from sqlmodel import Session, select
 
 from .queries import get_topic_from_submission
@@ -7,9 +8,9 @@ from .prompts import IELTS_TASK_1_EVALUATION_PROMPT
 from .models import SubmissionEvaluation, Topic, ExamType, TopicSubmission
 from ...common.db_engine import db_engine
 from typing import List
+from fastapi_pagination import Params
 
-
-def load_ielts_task1_topics():
+logger = logging.getLogger(__name__)
     topics: List[Topic] = []
     with open("./data/ielts-task1-topics.csv", "r") as file:
         import pandas as pd
@@ -49,7 +50,7 @@ def initialize_topics():
             else:
                 print("Topics already exist in the database. Skipping initialization.")
     except Exception as e:
-        print(f"Error initializing topics: {e}")
+        logger.error(f"Error initializing topics: {e}")
 
 def evaluate_submission(submission: TopicSubmission) -> str:
     try:
@@ -119,7 +120,5 @@ def evaluate_submission(submission: TopicSubmission) -> str:
         
 
     except Exception as e:
-        # Log the error for debugging
-        print(f"Error in evaluate_submission: {str(e)}")
-        # Return a user-friendly error message
+        logger.error(f"Error in evaluate_submission: {str(e)}")
         raise e
