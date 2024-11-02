@@ -4,12 +4,22 @@ from .features import auth_router, user_router, topic_router, subscription_route
 from scalar_fastapi import get_scalar_api_reference
 from .common.config import settings
 from contextlib import asynccontextmanager
+import logging
+
+# Add logging configuration
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler('app.log')
+    ]
+)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
     from .features.topic.utils import initialize_topics
-    print("Initializing topics")
     initialize_topics()
     yield
     # Shutdown

@@ -1,15 +1,21 @@
 from sqlmodel import Session, select
 from typing import List, Optional
+import logging
 from .models import Topic, ExamType, TopicSubmission
 from ...common.db_engine import db_engine
 from fastapi_pagination.ext.sqlalchemy import paginate
 from fastapi_pagination import Params
 
 
+logger = logging.getLogger(__name__)
+
+
 def get_filtered_topics(
     exam_type: Optional[ExamType] = None,
     category: Optional[str] = None,
+    task_type: Optional[str] = None,
     difficulty_level: Optional[int] = None,
+    paginate: bool = True,
     params: Params = Params()
 ) -> List[Topic]:
     try:
@@ -20,13 +26,17 @@ def get_filtered_topics(
                 query = query.where(Topic.exam_type == exam_type)
             if category:
                 query = query.where(Topic.category == category)
+            if task_type:
+                # FIXME: This is a hack to get the task type from the topic metadata
+                query = query.where(Topic.topic_metadata == f'{{"task_type": "{task_type}"}}')
             if difficulty_level:
                 query = query.where(Topic.difficulty_level == difficulty_level)
 
-            return paginate(session, query, params=params)
+            topics = paginate(session, query, params=params) if paginate else session.exec(query).all()
+
+            return topics
     except Exception as e:
-        # Log the error or handle it as needed
-        print(f"Database connection error: {e}")
+        logger.error(f"Database error while getting filtered topics: {e}")
         raise
 
 def get_topic_by_id(topic_id: str) -> Optional[Topic]:
@@ -35,8 +45,7 @@ def get_topic_by_id(topic_id: str) -> Optional[Topic]:
             topic = session.get(Topic, topic_id)
             return topic
     except Exception as e:
-        # Log the error or handle it as needed
-        print(f"Database connection error: {e}")
+        logger.error(f"Database error while getting topic by id: {e}")
         raise
 
 def create_topic_submission(topic_submission: TopicSubmission) -> TopicSubmission:
@@ -47,14 +56,26 @@ def create_topic_submission(topic_submission: TopicSubmission) -> TopicSubmissio
             session.refresh(topic_submission)
             return topic_submission
     except Exception as e:
-        # Log the error or handle it as needed
-        print(f"Database connection error: {e}")
+        logger.error(f"Database error while creating new submission: {e}")
         raise
 
 def get_topic_from_submission(submission: TopicSubmission) -> Topic:
-    with Session(db_engine) as session:
-        topic = session.exec(select(Topic).where(
-            Topic.id == submission.topic_id)).first()
-        if not topic:
-            raise ValueError("Topic not found")
-        return topic
+    try:
+        with Session(db_engine) as session:
+            topic = session.exec(select(Topic).where(
+                Topic.id == submission.topic_id)).first()
+            if not topic:
+                raise ValueError("Topic not found")
+            return topic
+    except Exception as e:
+        logger.error(f"Database error while getting topic from submission: {e}")
+        raise
+
+def add_new_topics(topics: List[Topic]) -> None:
+    try:
+        with Session(db_engine) as session:
+            session.add_all(topics)
+            session.commit()
+    except Exception as e:
+        logger.error(f"Database error while adding new topics: {e}")
+        raise
