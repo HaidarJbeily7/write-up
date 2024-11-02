@@ -60,9 +60,14 @@ def create_topic_submission(topic_submission: TopicSubmission) -> TopicSubmissio
         raise
 
 def get_topic_from_submission(submission: TopicSubmission) -> Topic:
-    with Session(db_engine) as session:
-        topic = session.exec(select(Topic).where(
-            Topic.id == submission.topic_id)).first()
-        if not topic:
-            raise ValueError("Topic not found")
-        return topic
+    try:
+        with Session(db_engine) as session:
+            topic = session.exec(select(Topic).where(
+                Topic.id == submission.topic_id)).first()
+            if not topic:
+                raise ValueError("Topic not found")
+            return topic
+    except Exception as e:
+        logger.error(f"Database error while getting topic from submission: {e}")
+        raise
+
