@@ -19,7 +19,12 @@ async def get_topics(
     difficulty_level: Optional[int] = Query(None, ge=1, le=10),
     params: Params = Depends(),
 ) -> Page[Topic]:
-    return get_filtered_topics(exam_type, category, difficulty_level, params)
+    return get_filtered_topics(
+        exam_type=exam_type,
+        category=category,
+        difficulty_level=difficulty_level,
+        params=params,
+    )
 
 
 @topic_router.get("/{topic_id}", response_model=Topic)

@@ -15,8 +15,8 @@ def get_filtered_topics(
     category: Optional[str] = None,
     task_type: Optional[str] = None,
     difficulty_level: Optional[int] = None,
-    paginate: bool = True,
-    params: Params = Params()
+    params: Params = Params(),
+    is_paginated: bool = True,
 ) -> List[Topic]:
     try:
         with Session(db_engine) as session:
@@ -32,8 +32,8 @@ def get_filtered_topics(
             if difficulty_level:
                 query = query.where(Topic.difficulty_level == difficulty_level)
 
-            topics = paginate(session, query, params=params) if paginate else session.exec(query).all()
-
+            topics = paginate(
+                session, query, params=params) if is_paginated else session.exec(query).all()
             return topics
     except Exception as e:
         logger.error(f"Database error while getting filtered topics: {e}")
