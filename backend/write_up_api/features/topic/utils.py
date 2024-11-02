@@ -4,7 +4,7 @@ from sqlmodel import Session, select
 
 from .queries import get_topic_from_submission
 
-from .prompts import IELTS_TASK_1_EVALUATION_PROMPT
+from .prompts import IELTS_TASK_1_EVALUATION_PROMPT, IELTS_TASK_2_EVALUATION_PROMPT
 from .models import SubmissionEvaluation, Topic, ExamType, TopicSubmission
 from ...common.db_engine import db_engine
 from typing import List
@@ -52,14 +52,25 @@ def initialize_topics():
     except Exception as e:
         logger.error(f"Error initializing topics: {e}")
 
-def evaluate_submission(submission: TopicSubmission) -> str:
+# -------------------------------------------------------------------------------------------------
+# Submission Evaluation
+# -------------------------------------------------------------------------------------------------
+
+def evaluate_submission(submission: TopicSubmission) -> SubmissionEvaluation:
     try:
         from dotenv import load_dotenv
         from julep import Julep
         from ...common.config import settings
 
-
         topic = get_topic_from_submission(submission)
+
+        match topic.exam_type, topic.topic_metadata.get("task_type"):
+            case ExamType.IELTS, "Task 1":
+                evaluation_prompt = IELTS_TASK_1_EVALUATION_PROMPT
+            case ExamType.IELTS, "Task 2":
+                evaluation_prompt = IELTS_TASK_2_EVALUATION_PROMPT
+            case _:
+                raise ValueError(f"Unsupported exam type or task type: {topic.exam_type.value} {topic.topic_metadata.get('task_type')}")
 
         load_dotenv(override=True)
         
@@ -96,7 +107,7 @@ def evaluate_submission(submission: TopicSubmission) -> str:
                 messages=[
                     {
                         "role": "system",
-                        "content": IELTS_TASK_1_EVALUATION_PROMPT
+                        "content": evaluation_prompt
                     },
                     {
                         "role": "user",
@@ -111,9 +122,15 @@ def evaluate_submission(submission: TopicSubmission) -> str:
 
             message = response.choices[0].message.content
             
-            json_part = message.split("```json")[1].split("```")[0]
+            try:
+                json_part = message.split("```json")[1].split("```")[0]
+                evaluation_data = json.loads(json_part)
+                return SubmissionEvaluation(**evaluation_data)
 
-            return SubmissionEvaluation(**json.loads(json_part))
+            except IndexError as e:
+                raise RuntimeError("Failed to extract JSON from message: Response format was incorrect") from e
+            except json.JSONDecodeError as e:
+                raise RuntimeError("Failed to parse JSON from response") from e
         
         except Exception as e:
             raise RuntimeError(f"Failed to get chat response: {str(e)}")
