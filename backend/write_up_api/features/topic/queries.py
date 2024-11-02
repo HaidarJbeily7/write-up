@@ -71,3 +71,11 @@ def get_topic_from_submission(submission: TopicSubmission) -> Topic:
         logger.error(f"Database error while getting topic from submission: {e}")
         raise
 
+def add_new_topics(topics: List[Topic]) -> None:
+    try:
+        with Session(db_engine) as session:
+            session.add_all(topics)
+            session.commit()
+    except Exception as e:
+        logger.error(f"Database error while adding new topics: {e}")
+        raise
