@@ -7,7 +7,7 @@ from ...common.dependencies import get_current_user
 from ...features.user.models import User
 from ..user.queries import get_user_by_id
 from .models import Topic, ExamType, TopicSubmission, TopicSubmissionRequest, TopicSubmissionResponse
-from .queries import create_topic_submission, get_filtered_topics, get_topic_by_id
+from .queries import add_submission_evaluation, add_topic_submission, add_topic_submission, get_filtered_topics, get_topic_by_id
 
 topic_router: APIRouter = APIRouter(tags=["topic"])
 
@@ -56,14 +56,19 @@ async def submit_answer(
         topic_submission = TopicSubmission(
             topic_id=topic_id, answer=answer, user_id=user.id)
         
-        evaluation = evaluate_submission(topic_submission)
+        add_topic_submission(topic_submission)
+
+        submission_evaluation = evaluate_submission(topic_submission)
         
-        if evaluation is None:
+
+        if submission_evaluation is None:
             raise HTTPException(status_code=500, detail="Failed to evaluate submission")
+
+        add_submission_evaluation(submission_evaluation)
 
         response = TopicSubmissionResponse(id=topic_submission.id, topic_id=topic_id, answer=answer,
                                            created_at=topic_submission.created_at, updated_at=topic_submission.updated_at,
-                                           evaluation=evaluation)
+                                           evaluation=submission_evaluation)
         return response
 
     except Exception as e:
