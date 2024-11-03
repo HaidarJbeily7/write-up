@@ -10,6 +10,35 @@ from fastapi_pagination import Params
 
 logger = logging.getLogger(__name__)
 
+def get_all_topics() -> List[Topic]:
+    try:
+        with Session(db_engine) as session:
+            return session.exec(select(Topic)).all()
+    except Exception as e:
+        logger.error(f"Database error while getting all topics: {e}")
+        raise
+
+
+def get_filtering_query(
+    exam_type: Optional[ExamType] = None,
+    category: Optional[str] = None,
+    task_type: Optional[str] = None,
+    difficulty_level: Optional[int] = None
+):
+    query = select(Topic)
+
+    if exam_type:
+        query = query.where(Topic.exam_type == exam_type)
+    if category:
+        query = query.where(Topic.category == category)
+    if task_type:
+        # FIXME: This is a hack to get the task type from the topic metadata
+        query = query.where(Topic.topic_metadata == f'{{"task_type": "{task_type}"}}')
+    if difficulty_level:
+        query = query.where(Topic.difficulty_level == difficulty_level)
+
+    return query
+
 
 
 def get_filtered_topics(
@@ -17,25 +46,30 @@ def get_filtered_topics(
     category: Optional[str] = None,
     task_type: Optional[str] = None,
     difficulty_level: Optional[int] = None,
-    params: Params = Params(),
-    is_paginated: bool = True,
 ) -> List[Topic]:
     try:
         with Session(db_engine) as session:
-            query = select(Topic)
+            query = get_filtering_query(
+                exam_type, category, task_type, difficulty_level)
 
-            if exam_type:
-                query = query.where(Topic.exam_type == exam_type)
-            if category:
-                query = query.where(Topic.category == category)
-            if task_type:
-                # FIXME: This is a hack to get the task type from the topic metadata
-                query = query.where(Topic.topic_metadata == f'{{"task_type": "{task_type}"}}')
-            if difficulty_level:
-                query = query.where(Topic.difficulty_level == difficulty_level)
+            topics = session.exec(query).all()
+            return topics
+    except Exception as e:
+        logger.error(f"Database error while getting filtered topics: {e}")
+        raise
 
-            topics = paginate(
-                session, query, params=params) if is_paginated else session.exec(query).all()
+def get_filtered_topics_paginated(
+    exam_type: Optional[ExamType] = None,
+    category: Optional[str] = None,
+    task_type: Optional[str] = None,
+    difficulty_level: Optional[int] = None,
+    params: Params = Params(),
+) -> List[Topic]:
+    try:
+        with Session(db_engine) as session:
+            query = get_filtering_query(exam_type, category, task_type, difficulty_level)
+
+            topics = paginate(session, query, params=params)
             return topics
     except Exception as e:
         logger.error(f"Database error while getting filtered topics: {e}")

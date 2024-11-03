@@ -5,9 +5,8 @@ from typing import Annotated, Optional
 from .utils import evaluate_submission
 from ...common.dependencies import get_current_user
 from ...features.user.models import User
-from ..user.queries import get_user_by_id
 from .models import Topic, ExamType, TopicSubmission, TopicSubmissionRequest, TopicSubmissionResponse
-from .queries import add_submission_evaluation, add_topic_submission, add_topic_submission, get_filtered_topics, get_topic_by_id
+from .queries import add_submission_evaluation, add_topic_submission, add_topic_submission, get_filtered_topics_paginated, get_topic_by_id
 
 topic_router: APIRouter = APIRouter(tags=["topic"])
 
@@ -19,7 +18,7 @@ async def get_topics(
     difficulty_level: Optional[int] = Query(None, ge=1, le=10),
     params: Params = Depends(),
 ) -> Page[Topic]:
-    return get_filtered_topics(
+    return get_filtered_topics_paginated(
         exam_type=exam_type,
         category=category,
         difficulty_level=difficulty_level,
