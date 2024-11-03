@@ -1,7 +1,8 @@
 from sqlmodel import Session, select
 from typing import List, Optional
 import logging
-from .models import Topic, ExamType, TopicSubmission
+import logging
+from .models import SubmissionEvaluation, Topic, ExamType, TopicSubmission
 from ...common.db_engine import db_engine
 from fastapi_pagination.ext.sqlalchemy import paginate
 from fastapi_pagination import Params
@@ -37,6 +38,7 @@ def get_filtering_query(
         query = query.where(Topic.difficulty_level == difficulty_level)
 
     return query
+
 
 
 def get_filtered_topics(
@@ -82,7 +84,7 @@ def get_topic_by_id(topic_id: str) -> Optional[Topic]:
         logger.error(f"Database error while getting topic by id: {e}")
         raise
 
-def create_topic_submission(topic_submission: TopicSubmission) -> TopicSubmission:
+def add_topic_submission(topic_submission: TopicSubmission) -> TopicSubmission:
     try:
         with Session(db_engine) as session:
             session.add(topic_submission)
@@ -103,6 +105,17 @@ def get_topic_from_submission(submission: TopicSubmission) -> Topic:
             return topic
     except Exception as e:
         logger.error(f"Database error while getting topic from submission: {e}")
+        raise
+
+def add_submission_evaluation(submission_evaluation: SubmissionEvaluation) -> SubmissionEvaluation:
+    try:
+        with Session(db_engine) as session:
+            session.add(submission_evaluation)
+            session.commit()
+            session.refresh(submission_evaluation)
+            return submission_evaluation    
+    except Exception as e:
+        logger.error(f"Database error while adding submission evaluation: {e}")
         raise
 
 def add_new_topics(topics: List[Topic]) -> None:

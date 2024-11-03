@@ -1,7 +1,7 @@
 import json
 import logging
 
-from .queries import add_new_topics, get_filtered_topics, get_topic_from_submission
+from .queries import add_new_topics, get_filtered_topics, add_new_topics, get_filtered_topics, get_topic_from_submission
 
 from .prompts import IELTS_TASK_1_EVALUATION_PROMPT, IELTS_TASK_2_EVALUATION_PROMPT
 from .models import SubmissionEvaluation, Topic, ExamType, TopicSubmission
@@ -171,7 +171,7 @@ def evaluate_submission(submission: TopicSubmission) -> SubmissionEvaluation:
             try:
                 json_part = message.split("```json")[1].split("```")[0]
                 evaluation_data = json.loads(json_part)
-                return SubmissionEvaluation(**evaluation_data)
+                return SubmissionEvaluation(submission_id=submission.id, **evaluation_data)
 
             except IndexError as e:
                 raise RuntimeError("Failed to extract JSON from message: Response format was incorrect") from e
