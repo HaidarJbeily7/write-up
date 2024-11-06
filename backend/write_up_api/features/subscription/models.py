@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Optional
+from sqlalchemy import CheckConstraint
 from sqlmodel import SQLModel, Field
 import uuid
 
@@ -21,6 +22,10 @@ class Subscription(SQLModel, table=True):
 
 class UserCredits(SQLModel, table=True):
     __tablename__ = "user_credits"
+    __table_args__ = (
+        CheckConstraint('credits_spent <= credits_allowance',
+                        name='check_credits_spent'),
+    )
 
     id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)
     user_id: str = Field(foreign_key="users.id")

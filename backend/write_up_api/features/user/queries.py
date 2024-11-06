@@ -4,12 +4,17 @@ from .models import User, UserProfile
 from ...common.db_engine import db_engine
 
 def create_user(email: str, full_name: str) -> User:
+    from ...features.subscription.queries import create_or_update_user_credits
+
     try:
         with Session(db_engine) as session:
             new_user = User(email=email, full_name=full_name, is_active=False)
             session.add(new_user)
             session.commit()
             session.refresh(new_user)
+
+            # Gift new users 3 free credits
+            create_or_update_user_credits(new_user.id, 3)
 
             return new_user
     except OperationalError as e:
