@@ -4,7 +4,7 @@ from typing import Annotated, Optional
 
 from ...features.subscription.queries import increment_credits_spent
 from .utils import evaluate_submission
-from ...common.dependencies import check_user_credits, get_current_user
+from ...common.dependencies import check_user_credits, get_current_user, get_db
 from ...features.user.models import User
 from .models import Topic, ExamType, TopicSubmission, TopicSubmissionRequest, TopicSubmissionResponse
 from .queries import add_submission_evaluation, add_topic_submission, add_topic_submission, get_filtered_topics_paginated, get_topic_by_id
@@ -70,9 +70,10 @@ async def submit_answer(
         response = TopicSubmissionResponse(id=topic_submission.id, topic_id=topic_id, answer=answer,
                                            created_at=topic_submission.created_at, updated_at=topic_submission.updated_at,
                                            evaluation=submission_evaluation)
-
-        # Increment credits spent
-        increment_credits_spent(user.id)
+        
+        with get_db() as db:
+            # Increment credits spent
+            increment_credits_spent(user.id, db)
 
         return response
 

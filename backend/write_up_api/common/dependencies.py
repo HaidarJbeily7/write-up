@@ -71,12 +71,11 @@ async def get_current_user(token: Annotated[str, Depends(JWTBearer())]) -> User:
 async def check_user_credits(user: Annotated[User, Depends(get_current_user)]) -> bool:
     from ..features.subscription.queries import get_user_credits
     try:
-        user_credits = get_user_credits(user.id)
-        if not user_credits:
-            raise HTTPException(status_code=400, detail="No credits found for user")
-            
-        credits_remaining = user_credits.credits_allowance - user_credits.credits_spent
-        if credits_remaining <= 0:
+
+        with get_db() as db:
+            user_credits = get_user_credits(user.id, db)
+
+        if not user_credits or user_credits.credits_spent >= user_credits.credits_allowance:
             raise HTTPException(status_code=400, detail="Insufficient credits")
 
         return True
