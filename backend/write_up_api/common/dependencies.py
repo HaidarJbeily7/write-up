@@ -67,3 +67,18 @@ async def get_current_user(token: Annotated[str, Depends(JWTBearer())]) -> User:
         raise HTTPException(status_code=404, detail="User not found")
     
     return user
+
+async def check_user_credits(user: Annotated[User, Depends(get_current_user)]) -> bool:
+    from ..features.subscription.queries import get_user_credits
+    try:
+        user_credits = get_user_credits(user.id)
+        if not user_credits:
+            raise HTTPException(status_code=400, detail="No credits found for user")
+            
+        credits_remaining = user_credits.credits_allowance - user_credits.credits_spent
+        if credits_remaining <= 0:
+            raise HTTPException(status_code=400, detail="Insufficient credits")
+
+        return True
+    except Exception as e:
+        raise e

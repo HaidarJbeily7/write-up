@@ -2,8 +2,9 @@ from fastapi import APIRouter, HTTPException, Path, Query, Depends
 from fastapi_pagination import Page, Params
 from typing import Annotated, Optional
 
+from ...features.subscription.queries import increment_credits_spent
 from .utils import evaluate_submission
-from ...common.dependencies import get_current_user
+from ...common.dependencies import check_user_credits, get_current_user
 from ...features.user.models import User
 from .models import Topic, ExamType, TopicSubmission, TopicSubmissionRequest, TopicSubmissionResponse
 from .queries import add_submission_evaluation, add_topic_submission, add_topic_submission, get_filtered_topics_paginated, get_topic_by_id
@@ -39,6 +40,7 @@ async def submit_answer(
     topic_id: Annotated[str, Path(description="The ID of the topic to submit an answer for")],
     data: TopicSubmissionRequest,
     user: User = Depends(get_current_user),
+    check_user_credits: bool = Depends(check_user_credits),
 ) -> TopicSubmissionResponse:
     try:
 
@@ -68,6 +70,10 @@ async def submit_answer(
         response = TopicSubmissionResponse(id=topic_submission.id, topic_id=topic_id, answer=answer,
                                            created_at=topic_submission.created_at, updated_at=topic_submission.updated_at,
                                            evaluation=submission_evaluation)
+
+        # Increment credits spent
+        increment_credits_spent(user.id)
+
         return response
 
     except Exception as e:
