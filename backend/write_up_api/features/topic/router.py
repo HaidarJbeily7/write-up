@@ -4,7 +4,7 @@ from typing import Annotated, Optional
 
 from ...features.subscription.queries import increment_credits_spent
 from .utils import evaluate_submission
-from ...common.dependencies import check_user_credits, get_current_user, get_db
+from ...common.dependencies import check_user_credits, get_current_user
 from ...features.user.models import User
 from .models import Topic, ExamType, TopicSubmission, TopicSubmissionRequest, TopicSubmissionResponse
 from .queries import add_submission_evaluation, add_topic_submission, add_topic_submission, get_filtered_topics_paginated, get_topic_by_id
@@ -71,9 +71,11 @@ async def submit_answer(
                                            created_at=topic_submission.created_at, updated_at=topic_submission.updated_at,
                                            evaluation=submission_evaluation)
         
-        with get_db() as db:
+        from ...common.db_engine import db_engine
+        from sqlmodel import Session
+        with Session(db_engine) as db_session:
             # Increment credits spent
-            increment_credits_spent(user.id, db)
+            increment_credits_spent(user.id, db_session)
 
         return response
 
