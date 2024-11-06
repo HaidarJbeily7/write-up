@@ -92,6 +92,7 @@ def get_user_profile(user_id: str) -> UserProfile | None:
         with Session(db_engine) as session:
             user_profile = session.exec(select(UserProfile).where(UserProfile.user_id == user_id)).first()
             return user_profile
+
     except OperationalError as e:
         print(f"Database connection error: {e}")
         raise
