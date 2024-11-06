@@ -60,6 +60,7 @@ def get_user_by_id(user_id: str) -> User | None:
         with Session(db_engine) as session:
             user = session.get(User, user_id)
             return user
+
     except OperationalError as e:
         print(f"Database connection error: {e}")
         raise
