@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - fix/use-string-instead-of-uuidbytes
+      - c/fix-cd-poetry
     paths:
       - 'backend/**'
   workflow_dispatch:
