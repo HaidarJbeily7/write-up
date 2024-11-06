@@ -3,6 +3,7 @@ from .models import Subscription, UserCredits
 from ...common.db_engine import db_engine
 from sqlalchemy.exc import OperationalError
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
+from fastapi import HTTPException
 
 def create_subscription(
     user_id: str,
@@ -95,13 +96,20 @@ def increment_credits_spent(
     db: Session,
     amount: int = 1,
 ) -> UserCredits:
-    statement = select(UserCredits).where(UserCredits.user_id == user_id)
-    user_credits = db.exec(statement).first()
-        
-    if user_credits:
+    try:
+        statement = select(UserCredits).where(
+            UserCredits.user_id == user_id).with_for_update()
+        user_credits = db.exec(statement).first()
+
+        if not user_credits or user_credits.credits_spent + amount > user_credits.credits_allowance:
+            raise HTTPException(status_code=400, detail="Insufficient credits")
+
         user_credits.credits_spent += amount
         db.add(user_credits)
         db.commit()
         db.refresh(user_credits)
-            
-    return user_credits
+
+        return user_credits
+    except Exception as e:
+        db.rollback()
+        raise e

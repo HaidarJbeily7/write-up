@@ -80,5 +80,7 @@ async def submit_answer(
         return response
 
     except Exception as e:
-        print(f"Something went wrong: {e}")
-        raise
+        if isinstance(e, HTTPException):
+            raise e
+        else:
+            raise HTTPException(status_code=500, detail=str(e))
