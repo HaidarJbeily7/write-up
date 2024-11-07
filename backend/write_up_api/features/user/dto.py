@@ -17,6 +17,8 @@ class UserProfileResponse(BaseModel):
     age: Optional[int] = None
     education: Optional[str] = None
     profile_metadata: Optional[dict] = None
+    credits_allowance: Optional[int] = None
+    credits_spent: Optional[int] = None
 
     class Config:
         from_attributes = True
