@@ -15,3 +15,8 @@ class PaymentSuccessRequest(BaseModel):
 
 class PaymentSuccessResponse(BaseModel):
     message: str
+
+
+class UserCreditsResponse(BaseModel):
+    credits_allowance: int
+    credits_spent: int

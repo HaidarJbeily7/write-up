@@ -4,8 +4,19 @@ from sqlmodel import Session
 from ...common.config import settings
 from ...common.dependencies import get_current_user, get_db
 from ...features.user.models import User
-from .dto import CreatePaymentRequest, PaymentIntentResponse, PaymentSuccessRequest, PaymentSuccessResponse
-from .queries import create_subscription, update_subscription_status, create_or_update_user_credits
+from .dto import (
+    CreatePaymentRequest, 
+    PaymentIntentResponse, 
+    PaymentSuccessRequest, 
+    PaymentSuccessResponse, 
+    UserCreditsResponse
+)
+from .queries import (
+    create_subscription, 
+    update_subscription_status, 
+    create_or_update_user_credits,
+    get_user_credits as get_user_credits_query
+)
 
 subscription_router: APIRouter = APIRouter(tags=["subscription"])
 
@@ -81,3 +92,10 @@ async def payment_success(
             raise HTTPException(status_code=400, detail="Payment not confirmed")
     except Exception as e:
         raise HTTPException(status_code=500, detail="Internal server error")
+
+@subscription_router.get("/user-credits", response_model=UserCreditsResponse)
+async def get_user_credits(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+) -> UserCreditsResponse:
+    return get_user_credits_query(current_user.id, db)
