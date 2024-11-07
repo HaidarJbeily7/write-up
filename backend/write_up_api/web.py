@@ -1,5 +1,8 @@
+import asyncio
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+import uvloop
 from .features import auth_router, user_router, topic_router, subscription_router
 from scalar_fastapi import get_scalar_api_reference
 from .common.config import settings
@@ -59,4 +62,24 @@ async def docs():
         title="Write-Up API",
     )
 
-print(settings.DATABASE_URL)
+
+def main(
+    host="127.0.0.1",
+    port=8000,
+    backlog=4096,
+    timeout_keep_alive=30,
+    workers=None,
+    log_level="info",
+) -> None:
+    uvicorn.run(
+        app,
+        host=host,
+        port=port,
+        log_level=log_level,
+        timeout_keep_alive=timeout_keep_alive,
+        backlog=backlog,
+        workers=workers,
+    )
+
+
+asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())

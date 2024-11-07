@@ -24,9 +24,17 @@ fastapi-pagination = "^0.12.31"
 julep = "^1.24.0"
 stripe = "^11.2.0"
 tenacity = "^9.0.0"
+uvicorn = {extras = ["standard"], version = "^0.32.0"}
+gunicorn = "^23.0.0"
+uvloop = "^0.21.0"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.29.0"
+
+[tool.poetry.scripts]
+dev = "uvicorn write_up_api:app --reload"
+prod = "gunicorn write_up_api:app -c gunicorn.conf.py"
+
 
 [build-system]
 requires = ["poetry-core"]
