@@ -100,7 +100,6 @@ export function ProfilePage() {
         {profile && (
           <Paper shadow="xs" p="xl">
             <Stack>
-
               <Box>
                 <Title order={3} mb="md">
                   Study Goals
@@ -117,7 +116,9 @@ export function ProfilePage() {
                     <Text size="sm" c="dimmed">
                       Current Band Score
                     </Text>
-                    <Text fw={500}>{profile.profile_metadata?.current_band_score || 'Not set'}</Text>
+                    <Text fw={500}>
+                      {profile.profile_metadata?.current_band_score || 'Not set'}
+                    </Text>
                   </Paper>
 
                   <Paper withBorder p="md" h="100px">
