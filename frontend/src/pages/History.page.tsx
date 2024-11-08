@@ -49,9 +49,9 @@ export function HistoryPage() {
         </Title>
         <Container miw="80%">
           <ScrollArea h="70vh">
-            <Accordion w="100%">
+            <Accordion w="100%" variant="contained" radius="md">
               {writeUps.map((writeUp, index) => (
-                <Accordion.Item key={index} value={`writeUp-${index}`}>
+                <Accordion.Item key={index} p={12} value={`writeUp-${index}`}>
                   <Accordion.Control>
                     <Group justify="space-between">
                       <Group>
