@@ -87,7 +87,7 @@ export function AnswerPage() {
   }
 
   return (
-    <Container size="sm">
+    <Container size="sm" h="100vh" pt={40}>
       <LoadingOverlay
         visible={answerLoading}
         loaderProps={{ children: 'The AI is checking your Answer...' }}
