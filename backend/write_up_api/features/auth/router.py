@@ -5,6 +5,9 @@ from ...common.config import settings
 from ...common.dependencies import get_current_user
 from .security import create_access_token
 import requests
+from ...features.subscription.queries import create_or_update_user_credits
+from sqlmodel import Session
+from ...common.db_engine import db_engine
 
 auth_router: APIRouter = APIRouter(tags=["auth"])
 
@@ -37,6 +40,9 @@ async def google_callback(request: Request):
     if not user:
         user = create_user(email, name)
         create_user_profile(user.id)
+        with Session(db_engine) as session:
+            create_or_update_user_credits(user.id, 10, session)
+
     token = create_access_token(data={"sub": user.email})
     return LoginResponse(user=UserResponse(id=user.id, fullname=user.full_name, email=user.email, is_active=user.is_active), token=TokenResponse(access_token=token, token_type="bearer"))
 
