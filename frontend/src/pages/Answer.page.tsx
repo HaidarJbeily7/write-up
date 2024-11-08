@@ -19,6 +19,7 @@ import { Topic } from '@/components/Topics/types';
 export function AnswerPage() {
   const [searchParams] = useSearchParams();
   const topicId = searchParams.get('id');
+  const submissionId = searchParams.get('submission_id') ?? null;
   const [topic, setTopic] = useState<Topic | null>(null);
   const [initLoading, setInitLoading] = useState(false);
   const [answerLoading, setAnswerLoading] = useState(false);
@@ -40,18 +41,40 @@ export function AnswerPage() {
         setInitLoading(false);
       }
     };
+    const fetchTopicSubmission = async () => {
+      setInitLoading(true);
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/v1/topics/${topicId}/submissions/${submissionId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+            },
+          }
+        );
+        setAnswer(response.data.answer);
+        setTopic(response.data.topic);
+      } catch (error) {
+        throw new Error(`Error Getting Topic Submission: ${error}`);
+      } finally {
+        setInitLoading(false);
+      }
+    };
 
-    if (topicId) {
+    if (topicId && submissionId) {
+      fetchTopicSubmission();
+    } else  if (topicId) {
       fetchTopic();
     }
   }, [topicId]);
 
   const handleAnswer = async () => {
+    const submissionIdUpdated = await handleSaveWithoutSubmit();
     setAnswerLoading(true);
     try {
       const options = {
         method: 'POST',
-        url: `${import.meta.env.VITE_BACKEND_URL}/api/v1/topics/${topicId}/answers`,
+        url: `${import.meta.env.VITE_BACKEND_URL}/api/v1/topics/${topicId}/submissions/${submissionIdUpdated}/evaluate`,
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
@@ -72,10 +95,10 @@ export function AnswerPage() {
   const handleSaveWithoutSubmit = async () => {
     setSaveLoading(true);
     try {
-      const submissionId = uuidv4();
+      const submissionIdUpdated = submissionId ?? uuidv4();
       const options = {
         method: 'PUT',
-        url: `${import.meta.env.VITE_BACKEND_URL}/api/v1/topics/${topicId}/submissions/${submissionId}`,
+        url: `${import.meta.env.VITE_BACKEND_URL}/api/v1/topics/${topicId}/submissions/${submissionIdUpdated}`,
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
@@ -83,7 +106,7 @@ export function AnswerPage() {
         data: { answer },
       };
       await axios.request(options);
-      navigate('/history');
+      return submissionIdUpdated;
     } catch (error) {
       throw new Error(`Failed to save answer: ${error instanceof Error ? error.message : error}`);
     } finally {
@@ -152,7 +175,7 @@ export function AnswerPage() {
           </Button>
           <Button
             variant="outline"
-            onClick={() => handleSaveWithoutSubmit()}
+            onClick={async () => {await handleSaveWithoutSubmit();navigate('/history');}}
             disabled={answer.length === 0}
           >
             Save to Continue Later

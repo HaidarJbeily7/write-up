@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import {
   Accordion,
   Button,
@@ -52,12 +53,13 @@ interface Submission {
 export function HistoryPage() {
   const [history, setHistory] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchHistory = async () => {
       const options = {
         method: 'GET',
-        url: 'https://api.vacansay.com/api/v1/topics/submissions',
+        url: `${import.meta.env.VITE_BACKEND_URL}/api/v1/topics/submissions`,
         headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
       };
       setLoading(true);
@@ -193,8 +195,12 @@ export function HistoryPage() {
                           </Text>
                         </>
                       ) : (
-                        <Button mt="sm" variant="outline">
-                          Evaluate
+                        <Button 
+                          mt="sm" 
+                          variant="outline"
+                          onClick={() => navigate(`/answer?id=${submission.topic_id}&submission_id=${submission.id}`)}
+                        >
+                          Continue Writing
                         </Button>
                       )}
                     </Accordion.Panel>
