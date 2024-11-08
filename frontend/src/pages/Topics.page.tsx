@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Container, Flex, Pagination, Select, Skeleton, Text, Title } from '@mantine/core';
 import { usePagination } from '@mantine/hooks';
+import AskForHelpButton from '@/components/AskForHelp/AskForHelpButton';
 import { Navbar } from '@/components/Navbar/Navbar';
 import TopicCard from '@/components/Topics/topicCard';
 import { Topic } from '@/components/Topics/types';
@@ -37,6 +38,7 @@ export function TopicsPage() {
 
   return (
     <Flex dir="row" mih="100vh">
+      <AskForHelpButton />
       <Navbar />
       <Flex direction="column" mih="100vh" w="100%">
         <Container>
