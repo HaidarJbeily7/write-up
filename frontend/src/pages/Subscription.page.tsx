@@ -3,6 +3,7 @@ import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import axios from 'axios';
 import { Button, Center, Container, Grid, Paper, Stack, Text, Title } from '@mantine/core';
+import AskForHelpButton from '@/components/AskForHelp/AskForHelpButton';
 import { Navbar } from '@/components/Navbar/Navbar';
 import PaymentForm from '@/components/Subscription/paymentForm';
 
@@ -50,6 +51,7 @@ export function SubscriptionPage() {
 
   return (
     <Grid>
+      <AskForHelpButton />
       <Navbar />
       <Container size="xl">
         <Title order={1} mt="xl" mb="xl" style={{ textAlign: 'center' }}>
