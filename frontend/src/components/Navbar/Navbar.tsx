@@ -8,7 +8,7 @@ import {
   IconUser,
 } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
-import { Code, Group, Text } from '@mantine/core';
+import { Code, Group, Image, Text, useMantineColorScheme } from '@mantine/core';
 import { useUserStore } from '@/store/user';
 import { ColorSchemeToggle } from '../ColorSchemeToggle/ColorSchemeToggle';
 import classes from './Navbar.module.css';
@@ -25,6 +25,7 @@ export function Navbar() {
   const [active, setActive] = useState('Home');
   const navigate = useNavigate();
   const { setIsLoggedIn } = useUserStore();
+  const { colorScheme } = useMantineColorScheme();
 
   const links = data.map((item) => (
     <a
@@ -47,10 +48,14 @@ export function Navbar() {
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>
         <Group className={classes.header} justify="space-between" align="center">
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            {/* <img src="/logo.png" alt="WriteUp Logo" style={{ width: '30px', height: '30px', marginRight: '10px' }} /> */}
-            <Text size="xl" fw={700}>
-              WriteUp
+          <div style={{ display: 'flex', alignItems: 'center', marginLeft: '14' }}>
+            <Image
+              src={colorScheme === 'dark' ? '/logo-white.png' : '/logo-black.png'}
+              alt="WriteUp Logo"
+              style={{ width: '40px', height: '40px', marginLeft: 12 }}
+            />
+            <Text size="lg" fw={500}>
+              riteUp
             </Text>
           </div>
           <Code fw={700}>v1.0.0</Code>
