@@ -50,7 +50,7 @@ export function Navbar() {
         <Group className={classes.header} justify="space-between" align="center">
           <div style={{ display: 'flex', alignItems: 'center', marginLeft: '14' }}>
             <Image
-              src={colorScheme === 'dark' ? '/logo-white.png' : '/logo-black.png'}
+              src={colorScheme === 'dark' ? 'images/logo-white.png' : 'images/logo-black.png'}
               alt="WriteUp Logo"
               style={{ width: '40px', height: '40px', marginLeft: 12 }}
             />
