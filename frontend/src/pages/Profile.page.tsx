@@ -15,6 +15,7 @@ import {
   Text,
   Title,
 } from '@mantine/core';
+import AskForHelpButton from '@/components/AskForHelp/AskForHelpButton';
 import { Navbar } from '@/components/Navbar/Navbar';
 import { useUserStore } from '@/store/user';
 
@@ -49,7 +50,9 @@ export function ProfilePage() {
         );
         setProfile(response.data);
       } catch (error) {
-        console.error('Failed to fetch profile:', error);
+        throw new Error(
+          `Failed to fetch profile:, ${error instanceof Error ? error.message : error}`
+        );
       }
     };
 
@@ -58,6 +61,7 @@ export function ProfilePage() {
 
   return (
     <Grid w="100%" m={0}>
+      <AskForHelpButton />
       <Navbar />
       <Container size="100%" p={0} px={0}>
         <Flex mt="xl" mb="xl" w="500px" justify="space-between" align="space-between">
