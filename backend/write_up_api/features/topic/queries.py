@@ -96,6 +96,32 @@ def add_topic_submission(topic_submission: TopicSubmission) -> TopicSubmission:
         logger.error(f"Database error while creating new submission: {e}")
         raise
 
+def create_or_update_topic_submission(topic_submission: TopicSubmission) -> TopicSubmission:
+    try:
+        with Session(db_engine) as session:
+            existing_submission = session.exec(
+                select(TopicSubmission).where(
+                    TopicSubmission.id == topic_submission.id
+                )
+            ).first()
+
+            if existing_submission:
+                existing_submission.answer = topic_submission.answer
+                session.add(existing_submission)
+                session.commit()
+                session.refresh(existing_submission)
+                return existing_submission
+            else:
+                session.add(topic_submission)
+                session.commit()
+                session.refresh(topic_submission)
+                return topic_submission
+
+    except Exception as e:
+        logger.error(f"Database error while creating/updating submission: {e}")
+        raise
+
+
 def get_topic_from_submission(submission: TopicSubmission) -> Topic:
     try:
         with Session(db_engine) as session:

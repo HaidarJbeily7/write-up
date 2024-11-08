@@ -72,7 +72,7 @@ class TopicSubmissionResponse(BaseModel):
     answer: str
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow, sa_column_kwargs={"onupdate": datetime.utcnow})
-    evaluation: SubmissionEvaluation
+    evaluation: SubmissionEvaluation | None = None
 
 class TopicSubmissionWithEvaluation(TopicSubmissionResponse):
     evaluation: SubmissionEvaluation | None = None

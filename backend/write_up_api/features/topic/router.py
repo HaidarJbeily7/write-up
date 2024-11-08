@@ -7,7 +7,7 @@ from .utils import evaluate_submission
 from ...common.dependencies import check_user_credits, get_current_user
 from ...features.user.models import User
 from .models import Topic, ExamType, TopicSubmission, TopicSubmissionRequest, TopicSubmissionResponse, TopicSubmissionWithTopicAndEvaluation, SubmissionHistory
-from .queries import add_submission_evaluation, add_topic_submission, add_topic_submission, get_filtered_topics_paginated, get_topic_by_id, get_user_topic_submissions, get_user_topic_submission, get_user_submission_history
+from .queries import add_submission_evaluation, add_topic_submission, add_topic_submission, get_filtered_topics_paginated, get_topic_by_id, get_user_topic_submissions, get_user_topic_submission, get_user_submission_history, create_or_update_topic_submission
 
 topic_router: APIRouter = APIRouter(tags=["topic"])
 
@@ -114,3 +114,78 @@ async def get_topic_submission(
     if submission is None:
         raise HTTPException(status_code=404, detail="Submission not found")
     return submission
+
+
+@topic_router.put("/{topic_id}/submissions/{submission_id}", response_model=TopicSubmissionResponse)
+async def update_topic_submission(
+    topic_id: Annotated[str, Path(description="The ID of the topic")],
+    submission_id: Annotated[str, Path(description="The ID of the submission")],
+    submission_request: TopicSubmissionRequest,
+    user: User = Depends(get_current_user)
+) -> TopicSubmissionResponse:
+    try:
+        topic = get_topic_by_id(topic_id)
+        if topic is None:
+            raise HTTPException(status_code=404, detail="Topic not found")
+        topic_submission = TopicSubmission(
+            id=submission_id,
+            topic_id=topic_id,
+            user_id=user.id,
+            answer=submission_request.answer
+        )
+
+        updated_submission = create_or_update_topic_submission(topic_submission)
+
+        return TopicSubmissionResponse(
+            id=updated_submission.id,
+            topic_id=topic_id,
+            answer=updated_submission.answer,
+            created_at=updated_submission.created_at,
+            updated_at=updated_submission.updated_at,
+            evaluation=None
+        )
+
+    except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
+        else:
+            raise HTTPException(status_code=500, detail=str(e))
+
+
+
+@topic_router.post("/{topic_id}/submissions/{submission_id}/evaluate", response_model=TopicSubmissionResponse)
+async def evaluate_topic_submission(
+    topic_id: Annotated[str, Path(description="The ID of the topic")],
+    submission_id: Annotated[str, Path(description="The ID of the submission")],
+    user: User = Depends(get_current_user),
+    check_user_credits: bool = Depends(check_user_credits),
+) -> TopicSubmissionResponse:
+    try:
+        # Get the submission
+        topic_submission = get_user_topic_submission(topic_id, submission_id, user.id)
+        if topic_submission is None:
+            raise HTTPException(status_code=404, detail="Submission not found")
+
+        # Create evaluation
+        submission_evaluation = evaluate_submission(topic_submission)
+        if submission_evaluation is None:
+            raise HTTPException(status_code=500, detail="Failed to evaluate submission")
+
+        add_submission_evaluation(submission_evaluation)
+
+        response = TopicSubmissionResponse(id=topic_submission.id, topic_id=topic_id, answer=topic_submission.answer,
+                                           created_at=topic_submission.created_at, updated_at=topic_submission.updated_at,
+                                           evaluation=submission_evaluation)
+        
+        from ...common.db_engine import db_engine
+        from sqlmodel import Session
+        with Session(db_engine) as db_session:
+            # Increment credits spent
+            increment_credits_spent(user.id, db_session)
+        
+        return response
+    except Exception as e:
+        if isinstance(e, HTTPException):
+            raise e
+        else:
+            raise HTTPException(status_code=500, detail=str(e))

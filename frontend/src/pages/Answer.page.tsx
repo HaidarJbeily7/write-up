@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
 import {
   Button,
   Container,
   Flex,
+  Group,
   Loader,
   LoadingOverlay,
   Paper,
@@ -20,6 +22,7 @@ export function AnswerPage() {
   const [topic, setTopic] = useState<Topic | null>(null);
   const [initLoading, setInitLoading] = useState(false);
   const [answerLoading, setAnswerLoading] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
   const [answer, setAnswer] = useState('');
   const navigate = useNavigate();
 
@@ -66,6 +69,28 @@ export function AnswerPage() {
     }
   };
 
+  const handleSaveWithoutSubmit = async () => {
+    setSaveLoading(true);
+    try {
+      const submissionId = uuidv4();
+      const options = {
+        method: 'PUT',
+        url: `${import.meta.env.VITE_BACKEND_URL}/api/v1/topics/${topicId}/submissions/${submissionId}`,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+        },
+        data: { answer },
+      };
+      await axios.request(options);
+      navigate('/history');
+    } catch (error) {
+      throw new Error(`Failed to save answer: ${error instanceof Error ? error.message : error}`);
+    } finally {
+      setSaveLoading(false);
+    }
+  };
+
   const handleInputChange = (value: string) => {
     setAnswer(value);
   };
@@ -88,7 +113,7 @@ export function AnswerPage() {
         visible={answerLoading}
         loaderProps={{ children: 'The AI is checking your Answer...' }}
       />
-
+      <LoadingOverlay visible={saveLoading} loaderProps={{ children: 'Saving your answer...' }} />
       <Paper withBorder shadow="md" p="xl" radius="md" mt="lg">
         <Title order={1} mb="md">
           {topic.category}
@@ -121,9 +146,18 @@ export function AnswerPage() {
             },
           }}
         />
-        <Button fullWidth mt="md" onClick={() => handleAnswer()} disabled={answer.length === 0}>
-          Submit Answer
-        </Button>
+        <Group mt="md" grow>
+          <Button onClick={() => handleAnswer()} disabled={answer.length === 0}>
+            Submit Answer For Evaluation
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => handleSaveWithoutSubmit()}
+            disabled={answer.length === 0}
+          >
+            Save to Continue Later
+          </Button>
+        </Group>
       </Paper>
     </Container>
   );
