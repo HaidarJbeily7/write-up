@@ -21,7 +21,7 @@ export function AnswerPage() {
   const [initLoading, setInitLoading] = useState(false);
   const [answerLoading, setAnswerLoading] = useState(false);
   const [answer, setAnswer] = useState('');
-  const wordLimit = 150;
+  const wordLimit = 250;
   const navigate = useNavigate();
 
   useEffect(() => {
