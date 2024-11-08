@@ -14,7 +14,7 @@ def create_user(email: str, full_name: str) -> User:
             session.refresh(new_user)
 
             # Gift new users 3 free credits
-            create_or_update_user_credits(new_user.id, 3)
+            create_or_update_user_credits(new_user.id, 10, session)
 
             return new_user
     except OperationalError as e:
