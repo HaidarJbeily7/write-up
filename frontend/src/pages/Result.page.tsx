@@ -1,5 +1,7 @@
+import { IconArrowLeft } from '@tabler/icons-react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Button, Container, Flex, Paper, Text, Title } from '@mantine/core';
+import { DonutChart } from '@mantine/charts';
+import { Button, Container, Flex, Group, Paper, Text, Title } from '@mantine/core';
 
 export function ResultPage() {
   const location = useLocation();
@@ -12,43 +14,113 @@ export function ResultPage() {
 
   const { evaluation } = resultData;
 
+  const sections = [
+    { title: 'Task Achievement', data: evaluation.task_achievement },
+    { title: 'Coherence and Cohesion', data: evaluation.coherence_and_cohesion },
+    { title: 'Lexical Resource', data: evaluation.lexical_resource },
+    { title: 'Grammatical Range and Accuracy', data: evaluation.grammatical_range_and_accuracy },
+  ];
+
   return (
-    <Flex gap="md" justify="center" align="center" direction="column" m="xl">
-      <Container size="sm">
-        <Paper withBorder shadow="md" p="xl" radius="md" mt="lg">
-          <Title order={1} mb="md">
-            Evaluation Results
-          </Title>
-
-          <Title order={3}>Task Achievement</Title>
-          <Text>Band Score: {evaluation.task_achievement.band_score}</Text>
-          <Text>Feedback: {evaluation.task_achievement.feedback}</Text>
-
-          <Title order={3}>Coherence and Cohesion</Title>
-          <Text>Band Score: {evaluation.coherence_and_cohesion.band_score}</Text>
-          <Text>Feedback: {evaluation.coherence_and_cohesion.feedback}</Text>
-
-          <Title order={3}>Lexical Resource</Title>
-          <Text>Band Score: {evaluation.lexical_resource.band_score}</Text>
-          <Text>Feedback: {evaluation.lexical_resource.feedback}</Text>
-
-          <Title order={3}>Grammatical Range and Accuracy</Title>
-          <Text>Band Score: {evaluation.grammatical_range_and_accuracy.band_score}</Text>
-          <Text>Feedback: {evaluation.grammatical_range_and_accuracy.feedback}</Text>
-
-          <Title order={3}>Overall</Title>
-          <Text>Band Score: {evaluation.overall.band_score}</Text>
-          <Text>Feedback: {evaluation.overall.feedback}</Text>
-        </Paper>
-      </Container>
+    <Container size="100%" pt="xl" mb={32}>
       <Button
-        size="lg"
-        variant="gradient"
-        gradient={{ from: 'blue', to: 'cyan', deg: 84 }}
+        variant="default"
+        size="md"
+        leftSection={<IconArrowLeft size={16} />}
         onClick={() => navigate('/dashboard')}
+        style={{ position: 'absolute', top: '20px', left: '20px' }}
       >
-        Go back to Dashboard
+        Back to Dashboard
       </Button>
-    </Flex>
+
+      <Title ta="center" order={1} mb="lg">
+        Evaluation Results
+      </Title>
+
+      <Flex gap="lg" wrap="wrap" justify="center" align="stretch">
+        {sections.map((section, index) => (
+          <Flex
+            key={index}
+            gap="md"
+            align="center"
+            direction={{ base: 'column', sm: 'row' }}
+            style={{ maxWidth: '600px', width: '100%' }}
+          >
+            <Paper withBorder shadow="md" p="lg" radius="md" style={{ flex: 1, height: '100%' }}>
+              <Title order={3} mb="md" ta="center">
+                {section.title}
+              </Title>
+              <Group justify="center" gap={4}>
+                <Text ta="center" fw={500}>
+                  Band Score:
+                </Text>
+                <DonutChart
+                  strokeWidth={0}
+                  withTooltip={false}
+                  chartLabel={section.data.band_score}
+                  data={[
+                    {
+                      name: 'Score',
+                      value: section.data.band_score,
+                      color: `hsl(${section.data.band_score * 10}, 70%, 50%)`,
+                    },
+                    {
+                      name: '',
+                      value: 9 - section.data.band_score,
+                      color: 'gray.6',
+                    },
+                  ]}
+                  size={40}
+                  thickness={5}
+                />
+              </Group>
+              <Text mt="xs" ta="center">
+                {section.data.feedback}
+              </Text>
+            </Paper>
+          </Flex>
+        ))}
+
+        <Flex
+          gap="md"
+          align="center"
+          direction={{ base: 'column', sm: 'row' }}
+          style={{ width: '50%' }}
+        >
+          <Paper withBorder shadow="md" p="lg" radius="md" style={{ flex: 1 }}>
+            <Title order={3} mb="md" ta="center">
+              Overall
+            </Title>
+            <Group justify="center" gap={6}>
+              <Text ta="center" fw={500}>
+                Band Score:
+              </Text>
+              <DonutChart
+                strokeWidth={0}
+                withTooltip={false}
+                chartLabel={evaluation.overall.band_score}
+                data={[
+                  {
+                    name: 'Score',
+                    value: evaluation.overall.band_score,
+                    color: `hsl(${evaluation.overall.band_score * 10}, 70%, 50%)`,
+                  },
+                  {
+                    name: '',
+                    value: 9 - evaluation.overall.band_score,
+                    color: 'gray.6',
+                  },
+                ]}
+                size={60}
+                thickness={5}
+              />
+            </Group>
+            <Text mt="xs" ta="center">
+              {evaluation.overall.feedback}
+            </Text>
+          </Paper>
+        </Flex>
+      </Flex>
+    </Container>
   );
 }
