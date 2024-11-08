@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Container, Flex, Grid, Skeleton, Text, Title } from '@mantine/core';
+import AskForHelpButton from '@/components/AskForHelp/AskForHelpButton';
 import { Navbar } from '@/components/Navbar/Navbar';
 import TopicCardGrid from '@/components/Topics/topicCardGrid';
 import { Topic } from '@/components/Topics/types';
@@ -29,6 +30,7 @@ export function DashboardPage() {
 
   return (
     <Grid>
+      <AskForHelpButton />
       <Navbar />
       <Container w="100%">
         <Title order={1} mt="xl" mb="xl" ta="center">

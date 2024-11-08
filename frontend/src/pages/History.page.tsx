@@ -1,4 +1,5 @@
 import { Accordion, Container, Flex, Group, ScrollArea, Text, Title } from '@mantine/core';
+import AskForHelpButton from '@/components/AskForHelp/AskForHelpButton';
 import { Navbar } from '@/components/Navbar/Navbar';
 
 interface WriteUp {
@@ -42,6 +43,7 @@ export function HistoryPage() {
 
   return (
     <Flex>
+      <AskForHelpButton />
       <Navbar />
       <Flex direction="column" mih="100vh" w="100%" align="center">
         <Title order={1} mt="xl" mb="xl">
