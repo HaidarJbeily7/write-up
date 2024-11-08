@@ -21,7 +21,7 @@ function AskForHelpButton() {
           <Button
             leftSection={<IconMessageCircle style={{ width: rem(16), height: rem(16) }} />}
             style={transitionStyles}
-            onClick={() => window.open('https://t.me/your_telegram_account', '_blank')}
+            onClick={() => window.open('https://t.me/writeupai', '_blank')}
           >
             Ask for Help
           </Button>
