@@ -6,8 +6,8 @@ from ...features.subscription.queries import increment_credits_spent
 from .utils import evaluate_submission
 from ...common.dependencies import check_user_credits, get_current_user
 from ...features.user.models import User
-from .models import Topic, ExamType, TopicSubmission, TopicSubmissionRequest, TopicSubmissionResponse
-from .queries import add_submission_evaluation, add_topic_submission, add_topic_submission, get_filtered_topics_paginated, get_topic_by_id
+from .models import Topic, ExamType, TopicSubmission, TopicSubmissionRequest, TopicSubmissionResponse, TopicSubmissionWithTopicAndEvaluation, SubmissionHistory
+from .queries import add_submission_evaluation, add_topic_submission, add_topic_submission, get_filtered_topics_paginated, get_topic_by_id, get_user_topic_submissions, get_user_topic_submission, get_user_submission_history
 
 topic_router: APIRouter = APIRouter(tags=["topic"])
 
@@ -25,6 +25,15 @@ async def get_topics(
         difficulty_level=difficulty_level,
         params=params,
     )
+
+@topic_router.get("/submissions", response_model=list[SubmissionHistory])
+async def get_user_submission_history_endpoint(
+    user: User = Depends(get_current_user)
+) -> list[SubmissionHistory]:
+    try:
+        return get_user_submission_history(user.id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Error retrieving topic history")
 
 
 @topic_router.get("/{topic_id}", response_model=Topic)
@@ -84,3 +93,24 @@ async def submit_answer(
             raise e
         else:
             raise HTTPException(status_code=500, detail=str(e))
+
+@topic_router.get("/{topic_id}/submissions", response_model=list[TopicSubmissionWithTopicAndEvaluation])
+async def get_topic_submissions(
+    topic_id: Annotated[str, Path(description="The ID of the topic to get submissions for")],
+    user: User = Depends(get_current_user)
+) -> list[TopicSubmissionWithTopicAndEvaluation]:
+    submissions = get_user_topic_submissions(topic_id, user.id)
+    if submissions is None:
+        return []
+    return submissions
+
+@topic_router.get("/{topic_id}/submissions/{submission_id}", response_model=TopicSubmissionWithTopicAndEvaluation)
+async def get_topic_submission(
+    topic_id: Annotated[str, Path(description="The ID of the topic")],
+    submission_id: Annotated[str, Path(description="The ID of the submission")],
+    user: User = Depends(get_current_user)
+) -> TopicSubmissionWithTopicAndEvaluation:
+    submission = get_user_topic_submission(topic_id, submission_id, user.id)
+    if submission is None:
+        raise HTTPException(status_code=404, detail="Submission not found")
+    return submission

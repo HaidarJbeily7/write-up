@@ -73,3 +73,17 @@ class TopicSubmissionResponse(BaseModel):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow, sa_column_kwargs={"onupdate": datetime.utcnow})
     evaluation: SubmissionEvaluation
+
+class TopicSubmissionWithEvaluation(TopicSubmissionResponse):
+    evaluation: SubmissionEvaluation | None = None
+
+class TopicSubmissionWithTopicAndEvaluation(TopicSubmissionWithEvaluation):
+    topic: Topic
+
+class SubmissionHistory(BaseModel):
+    id: str
+    question: str
+    category: str
+    exam_type: ExamType
+    topic_metadata: dict
+    submissions: list[TopicSubmissionWithEvaluation]
