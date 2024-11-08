@@ -21,7 +21,6 @@ export function AnswerPage() {
   const [initLoading, setInitLoading] = useState(false);
   const [answerLoading, setAnswerLoading] = useState(false);
   const [answer, setAnswer] = useState('');
-  const wordLimit = 250;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -68,10 +67,7 @@ export function AnswerPage() {
   };
 
   const handleInputChange = (value: string) => {
-    const words = value.trim().split(/\s+/);
-    if (words.length <= wordLimit) {
-      setAnswer(value);
-    }
+    setAnswer(value);
   };
 
   if (initLoading) {
@@ -116,9 +112,7 @@ export function AnswerPage() {
           onChange={(e) => handleInputChange(e.target.value)}
           minRows={4}
           maxRows={8}
-          description={`${
-            wordLimit - (answer.trim() === '' ? 0 : answer.trim().split(/\s+/).length)
-          } words remaining`}
+          description={`${answer.trim() === '' ? 0 : answer.trim().split(/\s+/).length} words`}
           required
           resize="vertical"
           styles={{
