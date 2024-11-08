@@ -23,6 +23,12 @@ interface UserProfile {
   target_exam: string | null;
   age: number | null;
   education: string | null;
+  profile_metadata: {
+    current_band_score: number | null;
+    exam_purpose: string | null;
+  } | null;
+  credits_allowance: number;
+  credits_spent: number;
 }
 
 export function ProfilePage() {
@@ -69,7 +75,14 @@ export function ProfilePage() {
                 {user.fullname}
               </Text>
               <Text c="dimmed">{user.email}</Text>
-              <Text>Total WriteUps: {user.totalWriteUps || 0}</Text>
+              {profile && (
+                <Group>
+                  <Text fw={400} role="status" aria-label="Available credits">
+                    Available Credits:
+                  </Text>
+                  <Text fw={500}>{profile.credits_allowance - profile.credits_spent}</Text>
+                </Group>
+              )}
             </Stack>
           </Group>
         </Paper>
@@ -87,6 +100,7 @@ export function ProfilePage() {
         {profile && (
           <Paper shadow="xs" p="xl">
             <Stack>
+
               <Box>
                 <Title order={3} mb="md">
                   Study Goals
@@ -101,9 +115,25 @@ export function ProfilePage() {
 
                   <Paper withBorder p="md" h="100px">
                     <Text size="sm" c="dimmed">
+                      Current Band Score
+                    </Text>
+                    <Text fw={500}>{profile.profile_metadata?.current_band_score || 'Not set'}</Text>
+                  </Paper>
+
+                  <Paper withBorder p="md" h="100px">
+                    <Text size="sm" c="dimmed">
                       Desired Band Score
                     </Text>
                     <Text fw={500}>{profile.desired_band_score || 'Not set'}</Text>
+                  </Paper>
+                </Group>
+
+                <Group grow mt="md">
+                  <Paper withBorder p="md" h="100px">
+                    <Text size="sm" c="dimmed">
+                      Exam Purpose
+                    </Text>
+                    <Text fw={500}>{profile.profile_metadata?.exam_purpose || 'Not set'}</Text>
                   </Paper>
                 </Group>
               </Box>

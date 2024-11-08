@@ -8,7 +8,9 @@ import { useUserStore } from '@/store/user';
 
 interface ProfileFormValues {
   desired_band_score: number;
+  current_band_score: number;
   target_exam: string;
+  exam_purpose: string;
   age: number;
   education: string;
 }
@@ -20,14 +22,19 @@ export function ProfileEditPage() {
   const form = useForm<ProfileFormValues>({
     initialValues: {
       desired_band_score: 0,
+      current_band_score: 0,
       target_exam: '',
+      exam_purpose: '',
       age: 0,
       education: '',
     },
     validate: {
       desired_band_score: (value) =>
         value < 0 || value > 9 ? 'Band score must be between 0 and 9' : null,
+      current_band_score: (value) =>
+        value < 0 || value > 9 ? 'Band score must be between 0 and 9' : null,
       target_exam: (value) => (!value ? 'Target exam is required' : null),
+      exam_purpose: (value) => (!value ? 'Exam purpose is required' : null),
       age: (value) => (value < 0 ? 'Age must be positive' : null),
       education: (value) => (!value ? 'Education level is required' : null),
     },
@@ -35,7 +42,14 @@ export function ProfileEditPage() {
 
   const handleSubmit = async (values: ProfileFormValues) => {
     try {
-      await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/v1/users/profile`, values, {
+      const profileData = {
+        ...values,
+        profile_metadata: {
+          current_band_score: values.current_band_score,
+          exam_purpose: values.exam_purpose,
+        },
+      };
+      await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/v1/users/profile`, profileData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
@@ -66,7 +80,7 @@ export function ProfileEditPage() {
   return (
     <Grid>
       <Navbar />
-      <Container size="3xl">
+      <Container size="3xl" style={{ width: '60%' }}>
         {!user.isActive && (
           <Paper shadow="xs" p="xl" mt="xl" bg="blue.1">
             <Text size="lg" fw={500} ta="center" c="blue.9">
@@ -75,9 +89,17 @@ export function ProfileEditPage() {
             </Text>
           </Paper>
         )}
-        <Paper shadow="xs" p="xl" mt="xl" w="100%">
+        <Paper shadow="xs" p="xl" mt="xl" style={{ width: '100%' }}>
           <form onSubmit={form.onSubmit(handleSubmit)}>
-            <Stack w="100%">
+            <Stack style={{ width: '100%' }}>
+              <NumberInput
+                label="Current Band Score"
+                min={0}
+                max={9}
+                step={0.5}
+                {...form.getInputProps('current_band_score')}
+              />
+
               <NumberInput
                 label="Desired Band Score"
                 min={0}
@@ -93,6 +115,15 @@ export function ProfileEditPage() {
                   { value: 'TOEFL', label: 'TOEFL' },
                 ]}
                 {...form.getInputProps('target_exam')}
+              />
+
+              <Select
+                label="Exam Purpose"
+                data={[
+                  { value: 'Study', label: 'Study' },
+                  { value: 'Travel', label: 'Travel (Visa Application/Immigration)' },
+                ]}
+                {...form.getInputProps('exam_purpose')}
               />
 
               <NumberInput label="Age" min={0} {...form.getInputProps('age')} />
