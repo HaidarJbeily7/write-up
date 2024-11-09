@@ -20,8 +20,9 @@ export default function TopicCard({ topic }: TopicCardGridProps) {
       p="xl"
       radius="md"
       style={{
-        width: '400px',
-        height: '270px',
+        width: '100%',
+        maxWidth: '400px',
+        minHeight: '270px', // Minimum height, allows growth if content exceeds
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
