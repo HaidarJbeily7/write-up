@@ -63,7 +63,7 @@ export function AnswerPage() {
 
     if (topicId && submissionId) {
       fetchTopicSubmission();
-    } else  if (topicId) {
+    } else if (topicId) {
       fetchTopic();
     }
   }, [topicId]);
@@ -175,7 +175,10 @@ export function AnswerPage() {
           </Button>
           <Button
             variant="outline"
-            onClick={async () => {await handleSaveWithoutSubmit();navigate('/history');}}
+            onClick={async () => {
+              await handleSaveWithoutSubmit();
+              navigate('/history');
+            }}
             disabled={answer.length === 0}
           >
             Save to Continue Later

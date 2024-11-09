@@ -16,6 +16,7 @@ import {
   Title,
 } from '@mantine/core';
 import AskForHelpButton from '@/components/AskForHelp/AskForHelpButton';
+import { BurgerMenu } from '@/components/Navbar/BurgerMenu';
 import { Navbar } from '@/components/Navbar/Navbar';
 import { useUserStore } from '@/store/user';
 
@@ -63,13 +64,14 @@ export function ProfilePage() {
     <Grid w="100%" m={0}>
       <AskForHelpButton />
       <Navbar />
-      <Container size="100%" p={0} px={0}>
-        <Flex mt="xl" mb="xl" w="500px" justify="space-between" align="space-between">
+      <BurgerMenu />
+      <Container size="90%" p={0} px={0} mt={32}>
+        <Flex mt="xl" mb="xl" justify="space-between" align="space-between">
           <Title order={1}>User Profile</Title>
           <Button onClick={() => navigate('/profile/edit')}>Edit</Button>
         </Flex>
 
-        <Paper shadow="xs" p="xl" mb="lg" w="500px">
+        <Paper shadow="xs" p="xl" mb="lg" maw="500px">
           <Group align="flex-start">
             <Avatar size="xl" radius="xl" color="blue">
               {user.fullname?.charAt(0)}

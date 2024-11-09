@@ -4,6 +4,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import axios from 'axios';
 import { Button, Center, Container, Grid, Paper, Stack, Text, Title } from '@mantine/core';
 import AskForHelpButton from '@/components/AskForHelp/AskForHelpButton';
+import { BurgerMenu } from '@/components/Navbar/BurgerMenu';
 import { Navbar } from '@/components/Navbar/Navbar';
 import PaymentForm from '@/components/Subscription/paymentForm';
 
@@ -53,6 +54,7 @@ export function SubscriptionPage() {
     <Grid>
       <AskForHelpButton />
       <Navbar />
+      <BurgerMenu />
       <Container size="xl">
         <Title order={1} mt="xl" mb="xl" style={{ textAlign: 'center' }}>
           Subscription Management

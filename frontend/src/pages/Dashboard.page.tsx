@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Container, Flex, Grid, Skeleton, Text, Title } from '@mantine/core';
 import AskForHelpButton from '@/components/AskForHelp/AskForHelpButton';
+import { BurgerMenu } from '@/components/Navbar/BurgerMenu';
 import { Navbar } from '@/components/Navbar/Navbar';
 import TopicCardGrid from '@/components/Topics/topicCardGrid';
 import { Topic } from '@/components/Topics/types';
@@ -32,28 +33,31 @@ export function DashboardPage() {
     <Grid>
       <AskForHelpButton />
       <Navbar />
-      <Container w="100%">
-        <Title order={1} mt="xl" mb="xl" ta="center">
-          Dashboard
-        </Title>
-        <Text c="dimmed" ta="center" size="lg" maw={580} mx="auto" mt="xl">
-          Choose Topic To start right away, Or You can Browse more Topics from the topics page!
-        </Text>
-        <Flex direction="column" align="center" h="100%" p={40}>
-          {loading ? (
-            <>
-              <Skeleton height={35} />
-              <Skeleton height={10} mt={80} />
-              <Skeleton height={10} mt={80} />
-              <Skeleton height={10} mt={80} />
-              <Skeleton height={10} mt={80} />
-              <Skeleton height={10} mt={80} />
-            </>
-          ) : (
-            <TopicCardGrid topics={topics} />
-          )}
-        </Flex>
-      </Container>
+      <BurgerMenu />
+      <Grid.Col span="auto">
+        <Container>
+          <Title order={1} mt="xl" mb="xl" ta="center">
+            Dashboard
+          </Title>
+          <Text c="dimmed" ta="center" size="lg" maw={580} mx="auto" mt="xl">
+            Choose Topic To start right away, Or You can Browse more Topics from the topics page!
+          </Text>
+          <Flex direction="column" align="center" h="100%" p={40}>
+            {loading ? (
+              <>
+                <Skeleton height={35} />
+                <Skeleton height={10} mt={80} />
+                <Skeleton height={10} mt={80} />
+                <Skeleton height={10} mt={80} />
+                <Skeleton height={10} mt={80} />
+                <Skeleton height={10} mt={80} />
+              </>
+            ) : (
+              <TopicCardGrid topics={topics} />
+            )}
+          </Flex>
+        </Container>
+      </Grid.Col>
     </Grid>
   );
 }

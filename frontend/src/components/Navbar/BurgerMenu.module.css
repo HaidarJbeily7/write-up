@@ -1,0 +1,61 @@
+/* BurgerMenu.module.css */
+.burgerIcon {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1000;
+  color: var(--mantine-color-dark-0); /* Light icon for dark mode */
+}
+
+@media (max-width: 768px) {
+  /* Show burger icon on small screens */
+  .burgerIcon {
+    display: block;
+  }
+}
+
+/* Drawer styling */
+.drawerContent {
+  padding: var(--mantine-spacing-md);
+  background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-7));
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--mantine-spacing-sm) 0;
+  border-bottom: rem(1px) solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+  margin-bottom: var(--mantine-spacing-md);
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-0));
+  font-size: var(--mantine-font-size-md);
+  padding: var(--mantine-spacing-xs) 0;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: var(--mantine-spacing-sm);
+}
+
+.link:hover {
+  color: var(--mantine-color-blue-light-color); /* Highlight color */
+}
+
+.logoutLink {
+  display: flex;
+  text-decoration: none;
+  align-items: center;
+  color: var(--mantine-color-red-6);
+  cursor: pointer;
+  margin-top: var(--mantine-spacing-md);
+  font-weight: 400;
+}
+
+.icon {
+  margin-right: var(--mantine-spacing-xs);
+}
