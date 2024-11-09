@@ -33,7 +33,7 @@ export function ResultPage() {
         Back to Dashboard
       </Button>
 
-      <Title ta="center" order={1} mb="lg">
+      <Title ta="center" order={1} mb="lg" mt="xl">
         Evaluation Results
       </Title>
 
@@ -85,7 +85,8 @@ export function ResultPage() {
           gap="md"
           align="center"
           direction={{ base: 'column', sm: 'row' }}
-          style={{ width: '50%' }}
+          w={{ base: '100%', lg: '50%' }}
+          maw={{ base: '600px' }}
         >
           <Paper withBorder shadow="md" p="lg" radius="md" style={{ flex: 1 }}>
             <Title order={3} mb="md" ta="center">
