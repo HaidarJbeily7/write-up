@@ -13,6 +13,7 @@ import {
   Title,
 } from '@mantine/core';
 import AskForHelpButton from '@/components/AskForHelp/AskForHelpButton';
+import { BurgerMenu } from '@/components/Navbar/BurgerMenu';
 import { Navbar } from '@/components/Navbar/Navbar';
 
 interface Evaluation {
@@ -91,6 +92,7 @@ export function HistoryPage() {
     <Flex>
       <AskForHelpButton />
       <Navbar />
+      <BurgerMenu />
       <Flex direction="column" mih="100vh" w="100%" align="center">
         <Title order={1} mt="xl" mb="xl">
           WriteUp History
@@ -195,10 +197,14 @@ export function HistoryPage() {
                           </Text>
                         </>
                       ) : (
-                        <Button 
-                          mt="sm" 
+                        <Button
+                          mt="sm"
                           variant="outline"
-                          onClick={() => navigate(`/answer?id=${submission.topic_id}&submission_id=${submission.id}`)}
+                          onClick={() =>
+                            navigate(
+                              `/answer?id=${submission.topic_id}&submission_id=${submission.id}`
+                            )
+                          }
                         >
                           Continue Writing
                         </Button>
