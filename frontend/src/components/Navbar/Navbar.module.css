@@ -1,11 +1,17 @@
 .navbar {
-  height: 100vh;
-  width: rem(300px);
-  padding: var(--mantine-spacing-md);
-  display: flex;
-  flex-direction: column;
-  border-right: rem(1px) solid
-    light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .navbar {
+    height: 100vh;
+    width: rem(250px);
+    padding: var(--mantine-spacing-md);
+    display: flex;
+    flex-direction: column;
+    border-right: rem(1px) solid
+      light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+  }
 }
 
 .navbarMain {
@@ -16,15 +22,13 @@
   padding-top: var(--mantine-spacing-md);
   padding-bottom: var(--mantine-spacing-md);
   margin-bottom: calc(var(--mantine-spacing-md) * 1.5);
-  border-bottom: rem(1px) solid
-    light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+  border-bottom: rem(1px) solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
 }
 
 .footer {
   padding-top: var(--mantine-spacing-md);
   margin-top: var(--mantine-spacing-md);
-  border-top: rem(1px) solid
-    light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+  border-top: rem(1px) solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
 }
 
 .link {
@@ -38,10 +42,7 @@
   font-weight: 500;
 
   @mixin hover {
-    background-color: light-dark(
-      var(--mantine-color-gray-0),
-      var(--mantine-color-dark-6)
-    );
+    background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
     color: light-dark(var(--mantine-color-black), var(--mantine-color-white));
 
     .linkIcon {
