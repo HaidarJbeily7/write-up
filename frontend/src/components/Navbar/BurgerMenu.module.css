@@ -1,15 +1,11 @@
 /* BurgerMenu.module.css */
 .burgerIcon {
+  display: none;
   position: fixed;
   top: 1rem;
   left: 1rem;
   z-index: 1000;
   color: var(--mantine-color-dark-0); /* Light icon for dark mode */
-}
-
-/* Hide the burger icon on larger screens */
-.burgerIcon {
-  display: none;
 }
 
 @media (max-width: 768px) {
@@ -55,7 +51,6 @@
   text-decoration: none;
   align-items: center;
   color: var(--mantine-color-red-6);
-  font-weight: bold;
   cursor: pointer;
   margin-top: var(--mantine-spacing-md);
   font-weight: 400;
