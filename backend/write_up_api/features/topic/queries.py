@@ -2,7 +2,7 @@ from sqlmodel import Session, select
 from typing import List, Optional
 import logging
 import logging
-from .models import SubmissionEvaluation, Topic, ExamType, TopicSubmission, TopicSubmissionWithTopicAndEvaluation, SubmissionHistory, TopicSubmissionWithEvaluation
+from .models import SubmissionEvaluation, SubmissionEvaluationV2, SubmissionHistoryV2, Topic, ExamType, TopicSubmission, TopicSubmissionWithEvaluationV2, TopicSubmissionWithTopicAndEvaluation, SubmissionHistory, TopicSubmissionWithEvaluation, TopicSubmissionWithTopicAndEvaluationV2
 from ...common.db_engine import db_engine
 from fastapi_pagination.ext.sqlalchemy import paginate
 from fastapi_pagination import Params
@@ -145,6 +145,18 @@ def add_submission_evaluation(submission_evaluation: SubmissionEvaluation) -> Su
         logger.error(f"Database error while adding submission evaluation: {e}")
         raise
 
+
+def add_submission_evaluation_v2(submission_evaluation: SubmissionEvaluationV2) -> SubmissionEvaluationV2:
+    try:
+        with Session(db_engine) as session:
+            session.add(submission_evaluation)
+            session.commit()
+            session.refresh(submission_evaluation)
+            return submission_evaluation
+    except Exception as e:
+        logger.error(f"Database error while adding submission evaluation v2: {e}")
+        raise
+
 def add_new_topics(topics: List[Topic]) -> None:
     try:
         with Session(db_engine) as session:
@@ -179,6 +191,32 @@ def get_user_topic_submissions(topic_id: str, user_id: str) -> list[TopicSubmiss
     except Exception as e:
         logger.error(f"Database error while getting user topic submissions: {e}")
         raise
+
+
+def get_user_topic_submissions_v2(topic_id: str, user_id: str) -> list[TopicSubmissionWithTopicAndEvaluationV2]:
+    try:
+        with Session(db_engine) as session:
+            statement = select(TopicSubmission, Topic, SubmissionEvaluationV2).join(Topic, TopicSubmission.topic_id == Topic.id).outerjoin(SubmissionEvaluationV2, TopicSubmission.id == SubmissionEvaluationV2.submission_id).where(
+                TopicSubmission.topic_id == topic_id,
+                TopicSubmission.user_id == user_id
+            )
+            results = session.exec(statement).all()
+            submissions = []
+            for submission, topic, evaluation in results:
+                submissions.append(TopicSubmissionWithTopicAndEvaluationV2(
+                    id=submission.id,
+                    topic_id=submission.topic_id,
+                    answer=submission.answer,
+                    created_at=submission.created_at,
+                    updated_at=submission.updated_at,
+                    evaluation=evaluation,
+                    topic=topic
+                ))
+            return submissions
+    except Exception as e:
+        logger.error(
+            f"Database error while getting user topic submissions: {e}")
+        raise
     
 def get_user_topic_submission(topic_id: str, submission_id: str, user_id: str) -> TopicSubmissionWithTopicAndEvaluation:
     try:
@@ -204,7 +242,33 @@ def get_user_topic_submission(topic_id: str, submission_id: str, user_id: str) -
     except Exception as e:
         logger.error(f"Database error while getting user topic submission: {e}")
         raise
-    
+
+
+def get_user_topic_submission_v2(topic_id: str, submission_id: str, user_id: str) -> TopicSubmissionWithTopicAndEvaluationV2:
+    try:
+        with Session(db_engine) as session:
+            statement = select(TopicSubmission, Topic, SubmissionEvaluationV2).join(Topic, TopicSubmission.topic_id == Topic.id).outerjoin(SubmissionEvaluationV2, TopicSubmission.id == SubmissionEvaluationV2.submission_id).where(
+                TopicSubmission.topic_id == topic_id,
+                TopicSubmission.id == submission_id,
+                TopicSubmission.user_id == user_id
+            )
+            result = session.exec(statement).first()
+            if not result:
+                return None
+            submission, topic, evaluation = result
+            return TopicSubmissionWithTopicAndEvaluationV2(
+                id=submission.id,
+                topic_id=submission.topic_id,
+                answer=submission.answer,
+                created_at=submission.created_at,
+                updated_at=submission.updated_at,
+                evaluation=evaluation,
+                topic=topic
+            )
+    except Exception as e:
+        logger.error(
+            f"Database error while getting user topic submission: {e}")
+        raise
     
 def get_user_submission_history(user_id: str) -> list[SubmissionHistory]:
     try:
@@ -242,6 +306,55 @@ def get_user_submission_history(user_id: str) -> list[SubmissionHistory]:
             for topic_id, data in topic_submissions.items():
                 topic = data['topic']
                 submissions.append(SubmissionHistory(
+                    id=topic.id,
+                    question=topic.question,
+                    category=topic.category,
+                    exam_type=topic.exam_type,
+                    topic_metadata=topic.topic_metadata,
+                    submissions=data['submissions']
+                ))
+            return submissions
+    except Exception as e:
+        logger.error(f"Database error while getting user topic history: {e}")
+        raise
+
+
+def get_user_submission_history_v2(user_id: str) -> list[SubmissionHistoryV2]:
+    try:
+        with Session(db_engine) as session:
+            # Query that joins topics with submissions and evaluations for this user
+            statement = select(TopicSubmission, Topic, SubmissionEvaluationV2)\
+                .join(Topic, TopicSubmission.topic_id == Topic.id)\
+                .outerjoin(SubmissionEvaluationV2, TopicSubmission.id == SubmissionEvaluationV2.submission_id)\
+                .where(TopicSubmission.user_id == user_id)\
+                .order_by(TopicSubmission.created_at.desc())
+
+            results = session.exec(statement).all()
+
+            submissions = []
+            # Group submissions by topic_id
+            topic_submissions = {}
+            for submission, topic, evaluation in results:
+                if topic.id not in topic_submissions:
+                    topic_submissions[topic.id] = {
+                        'topic': topic,
+                        'submissions': []
+                    }
+                topic_submissions[topic.id]['submissions'].append(
+                    TopicSubmissionWithEvaluationV2(
+                        id=submission.id,
+                        topic_id=submission.topic_id,
+                        answer=submission.answer,
+                        created_at=submission.created_at,
+                        updated_at=submission.updated_at,
+                        evaluation=evaluation,
+                    )
+                )
+
+            # Create SubmissionHistory objects from grouped data
+            for topic_id, data in topic_submissions.items():
+                topic = data['topic']
+                submissions.append(SubmissionHistoryV2(
                     id=topic.id,
                     question=topic.question,
                     category=topic.category,

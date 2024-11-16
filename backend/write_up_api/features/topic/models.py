@@ -42,7 +42,7 @@ class TopicSubmission(SQLModel, table=True):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True, index=True)
     user_id: str = Field(foreign_key="users.id")
     topic_id: str = Field(foreign_key="topics.id")
-    answer: str
+    answer: str = Field(sa_type=Text)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow, sa_column_kwargs={"onupdate": datetime.utcnow})
 
@@ -66,6 +66,18 @@ class SubmissionEvaluation(SQLModel, table=True):
     grammatical_range_and_accuracy: EvaluationMetric = Field(sa_column=Column(JSON))
     overall: EvaluationMetric = Field(sa_column=Column(JSON))
 
+
+class SubmissionEvaluationV2(SQLModel, table=True):
+    __tablename__ = 'submission_evaluations_v2'
+
+    id: str = Field(default_factory=lambda: str(
+        uuid.uuid4()), primary_key=True, index=True)
+    submission_id: str = Field(foreign_key="topic_submissions.id")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow, sa_column_kwargs={
+                                 "onupdate": datetime.utcnow})
+    evaluation: str | None = Field(default=None, sa_type=Text)
+
 class TopicSubmissionResponse(BaseModel):
     id: str
     topic_id: str
@@ -74,11 +86,32 @@ class TopicSubmissionResponse(BaseModel):
     updated_at: datetime = Field(default_factory=datetime.utcnow, sa_column_kwargs={"onupdate": datetime.utcnow})
     evaluation: SubmissionEvaluation | None = None
 
+
+class TopicSubmissionResponseV2(BaseModel):
+    id: str
+    topic_id: str
+    answer: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow, sa_column_kwargs={
+                                 "onupdate": datetime.utcnow})
+    evaluation: str | None = None
+
+
 class TopicSubmissionWithEvaluation(TopicSubmissionResponse):
     evaluation: SubmissionEvaluation | None = None
 
+
+class TopicSubmissionWithEvaluationV2(TopicSubmissionResponseV2):
+    evaluation: SubmissionEvaluationV2 | None = None
+
+
 class TopicSubmissionWithTopicAndEvaluation(TopicSubmissionWithEvaluation):
     topic: Topic
+
+
+class TopicSubmissionWithTopicAndEvaluationV2(TopicSubmissionWithEvaluationV2):
+    topic: Topic
+
 
 class SubmissionHistory(BaseModel):
     id: str
@@ -87,3 +120,12 @@ class SubmissionHistory(BaseModel):
     exam_type: ExamType
     topic_metadata: dict
     submissions: list[TopicSubmissionWithEvaluation]
+
+
+class SubmissionHistoryV2(BaseModel):
+    id: str
+    question: str
+    category: str
+    exam_type: ExamType
+    topic_metadata: dict
+    submissions: list[TopicSubmissionWithEvaluationV2]

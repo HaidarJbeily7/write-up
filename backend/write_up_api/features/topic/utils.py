@@ -3,8 +3,8 @@ import logging
 
 from .queries import add_new_topics, get_filtered_topics, add_new_topics, get_filtered_topics, get_topic_from_submission
 
-from .prompts import IELTS_TASK_1_EVALUATION_PROMPT, IELTS_TASK_2_EVALUATION_PROMPT
-from .models import SubmissionEvaluation, Topic, ExamType, TopicSubmission
+from .prompts import IELTS_TASK_1_EVALUATION_PROMPT, IELTS_TASK_2_EVALUATION_PROMPT, IELTS_TASK_2_EVALUATION_PROMPT_V2
+from .models import SubmissionEvaluation, SubmissionEvaluationV2, Topic, ExamType, TopicSubmission
 from ...common.db_engine import db_engine
 from typing import List
 from fastapi_pagination import Params
@@ -181,6 +181,86 @@ def evaluate_submission(submission: TopicSubmission) -> SubmissionEvaluation:
         except Exception as e:
             raise RuntimeError(f"Failed to get chat response: {str(e)}")
         
+
+    except Exception as e:
+        logger.error(f"Error in evaluate_submission: {str(e)}")
+        raise e
+
+
+def evaluate_submission_v2(submission: TopicSubmission) -> SubmissionEvaluationV2:
+    try:
+        from dotenv import load_dotenv
+        from julep import Julep
+        from ...common.config import settings
+
+        topic = get_topic_from_submission(submission)
+
+        match topic.exam_type, topic.topic_metadata.get("task_type"):
+            case ExamType.IELTS, "Task 1":
+                evaluation_prompt = IELTS_TASK_1_EVALUATION_PROMPT
+            case ExamType.IELTS, "Task 2":
+                evaluation_prompt = IELTS_TASK_2_EVALUATION_PROMPT_V2
+            case _:
+                raise ValueError(f"Unsupported exam type or task type: {
+                                 topic.exam_type.value} {topic.topic_metadata.get('task_type')}")
+
+        load_dotenv(override=True)
+
+        julep_api_key = settings.JULEP_API_KEY
+        if not julep_api_key:
+            raise ValueError("JULEP_API_KEY environment variable not set")
+
+        openai_api_key = settings.OPENAI_API_KEY
+        if not openai_api_key:
+            raise ValueError("OPENAI_API_KEY environment variable not set")
+
+        julep = Julep(api_key=julep_api_key, environment="dev")
+
+        try:
+            agent = julep.agents.create(
+                name="Steve",
+                about="a helpful assistant that evaluates IELTS Tasks",
+                model="gpt-4o-mini",
+            )
+        except Exception as e:
+            raise RuntimeError(f"Failed to create Julep agent: {str(e)}")
+
+        try:
+            session = julep.sessions.create(
+                agent=agent.id,
+            )
+        except Exception as e:
+            raise RuntimeError(f"Failed to create Julep session: {str(e)}")
+
+        formatted_essay = f"""
+        {topic.question}
+        (This is a Task 2 IELTS Writing Question)
+        {submission.answer}
+        (this is the Answer of the question)
+        """
+        try:
+            response = julep.sessions.chat(
+                session_id=session.id,
+                x_custom_api_key=openai_api_key,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": evaluation_prompt
+                    },
+                    {
+                        "role": "user",
+                        "content": formatted_essay,
+                    }
+                ]
+            )
+
+            message = response.choices[0].message.content
+
+            return SubmissionEvaluationV2(submission_id=submission.id, evaluation=message)
+
+
+        except Exception as e:
+            raise RuntimeError(f"Failed to get chat response: {str(e)}")
 
     except Exception as e:
         logger.error(f"Error in evaluate_submission: {str(e)}")
