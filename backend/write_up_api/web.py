@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 import uvloop
-from .features import auth_router, user_router, topic_router_v1, topic_router_v2, subscription_router
+from .features import auth_router, user_router, topic_router_v1, topic_router_v2, subscription_router, admin_router
 from scalar_fastapi import get_scalar_api_reference
 from .common.config import settings
 from contextlib import asynccontextmanager
@@ -51,6 +51,7 @@ app.include_router(user_router, prefix="/api/v1/users")
 app.include_router(topic_router_v1, prefix="/api/v1/topics")
 app.include_router(topic_router_v2, prefix="/api/v2/topics")
 app.include_router(subscription_router, prefix="/api/v1/subscriptions")
+app.include_router(admin_router, prefix="/api")
 
 @app.get("/api/health")
 async def health():

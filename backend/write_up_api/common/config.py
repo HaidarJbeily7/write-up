@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     # STRIPE SETTINGS
     STRIPE_SECRET_KEY: str
 
+    # ADMIN API KEY
+    ADMIN_API_KEY: str
+
     class Config:
         env_file = ".env"
         case_sensitive = True
