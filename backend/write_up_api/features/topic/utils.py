@@ -3,7 +3,7 @@ import logging
 
 from .queries import add_new_topics, get_filtered_topics, add_new_topics, get_filtered_topics, get_topic_from_submission
 
-from .prompts import IELTS_TASK_1_EVALUATION_PROMPT, IELTS_TASK_2_EVALUATION_PROMPT, IELTS_TASK_2_EVALUATION_PROMPT_V2
+from .prompts import IELTS_TASK_1_EVALUATION_PROMPT, IELTS_TASK_2_EVALUATION_PROMPT, IELTS_TASK_2_EVALUATION_PROMPT_V2_PART_1, IELTS_TASK_2_EVALUATION_PROMPT_V2_PART_2
 from .models import SubmissionEvaluation, SubmissionEvaluationV2, Topic, ExamType, TopicSubmission
 from ...common.db_engine import db_engine
 from typing import List
@@ -199,7 +199,7 @@ def evaluate_submission_v2(submission: TopicSubmission) -> SubmissionEvaluationV
             case ExamType.IELTS, "Task 1":
                 evaluation_prompt = IELTS_TASK_1_EVALUATION_PROMPT
             case ExamType.IELTS, "Task 2":
-                evaluation_prompt = IELTS_TASK_2_EVALUATION_PROMPT_V2
+                evaluation_prompt = IELTS_TASK_2_EVALUATION_PROMPT_V2_PART_1, IELTS_TASK_2_EVALUATION_PROMPT_V2_PART_2
             case _:
                 raise ValueError(f"Unsupported exam type or task type: {
                                  topic.exam_type.value} {topic.topic_metadata.get('task_type')}")
@@ -245,7 +245,7 @@ def evaluate_submission_v2(submission: TopicSubmission) -> SubmissionEvaluationV
                 messages=[
                     {
                         "role": "system",
-                        "content": evaluation_prompt
+                        "content": evaluation_prompt[0]
                     },
                     {
                         "role": "user",
@@ -255,7 +255,22 @@ def evaluate_submission_v2(submission: TopicSubmission) -> SubmissionEvaluationV
             )
 
             message = response.choices[0].message.content
+            response = julep.sessions.chat(
+                session_id=session.id,
+                x_custom_api_key=openai_api_key,
+                messages=[
+                    {
+                        "role": "system",
+                        "content": evaluation_prompt[1]
+                    },
+                    {
+                        "role": "user",
+                        "content": formatted_essay,
+                    }
+                ]
+            )
 
+            message += response.choices[0].message.content
             return SubmissionEvaluationV2(submission_id=submission.id, evaluation=message)
 
 
