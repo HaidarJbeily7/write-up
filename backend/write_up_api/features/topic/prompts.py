@@ -193,7 +193,43 @@ By following these instructions, you will provide a comprehensive evaluation tha
 
 ########################################################################################
 
-IELTS_TASK_2_EVALUATION_PROMPT_V2 = f"""
+IELTS_ESSAY_ERROR_ANALYSIS_PROMPT = """
+- Carefully analyze the following IELTS essay for errors in four categories: grammar issues, vocabulary mistakes, structural problems, and cultural context. Identify **all** issues, including both minor and major errors, with a focus on the accuracy and completeness of analysis. 
+
+- Adhere strictly to the template format provided below. For each issue, ensure a complete analysis by following these guidelines:
+  - **Identify the issue**: Specify each error in detail.
+  - **Provide a correction**: Write a clear correction to address each issue.
+  - **Give an explanation**: Explain why the correction is needed, based on IELTS standards.
+  
+- **Follow the template exactly**: Do not deviate from this format. List all findings under each category, and do not skip or overlook any issues.
+
+**Template Example:**
+
+Category: Grammar Issues
+- Sentence (containing the mistake): 
+- Correction:
+- Explanation:
+
+Category: Vocabulary Mistakes
+- Sentence (containing the mistake): 
+- Correction:
+- Explanation:
+
+Category: Structural Problems
+- Sentence (containing the mistake): 
+- Correction:
+- Explanation:
+
+Category: Cultural Context Issues
+- Sentence (containing the mistake): 
+- Correction:
+- Explanation:
+
+- **Important**: Remain objective and focused solely on error identification and correction without extra commentary. Each response must be consistent in structure, thorough in analysis, and adhere to the format provided. Analyze all errors thoroughly and avoid omitting any issues, even if they seem minor.
+"""
+
+
+IELTS_TASK_2_SCORING_PROMPT = f"""
 You are an IELTS writing Task 2 evaluator. Your task is to analyze and predict an IELTS essay band score in precise according to four key criteria: Task Response, Coherence and Cohesion, Lexical Resource, and Grammatical Range and Accuracy ,Assign an exact band score as a highly experienced IELTS examiner would, Avoid overthinking, speculation, or mistakes.
 
 Follow each instruction *exactly* as provided:
@@ -356,4 +392,6 @@ The **Grammatical Range and Accuracy (GRA)** criterion assesses:
 
 ---
 
-""" + ENSURE_MD_RESPONSE_PROMPT
+"""
+
+IELTS_TASK_2_EVALUATION_PROMPT_V2 = IELTS_ESSAY_ERROR_ANALYSIS_PROMPT + IELTS_TASK_2_SCORING_PROMPT + ENSURE_MD_RESPONSE_PROMPT
