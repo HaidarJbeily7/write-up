@@ -270,7 +270,7 @@ def evaluate_submission_v2(submission: TopicSubmission) -> SubmissionEvaluationV
                 ]
             )
 
-            message += response.choices[0].message.content
+            message = message + "\n\n--- \n\n" + response.choices[0].message.content
             return SubmissionEvaluationV2(submission_id=submission.id, evaluation=message)
 
 
