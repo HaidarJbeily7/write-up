@@ -5,8 +5,8 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   Button,
   Container,
+  em,
   Flex,
-  Group,
   Loader,
   LoadingOverlay,
   Paper,
@@ -14,6 +14,7 @@ import {
   Textarea,
   Title,
 } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { Topic } from '@/components/Topics/types';
 
 export function AnswerPage() {
@@ -26,6 +27,7 @@ export function AnswerPage() {
   const [saveLoading, setSaveLoading] = useState(false);
   const [answer, setAnswer] = useState('');
   const navigate = useNavigate();
+  const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 
   useEffect(() => {
     const fetchTopic = async () => {
@@ -137,7 +139,7 @@ export function AnswerPage() {
   }
 
   return (
-    <Container size="sm" h="100vh" pt={40}>
+    <Container size="sm" mb="xl" h="100vh" pt={40}>
       <LoadingOverlay
         visible={answerLoading}
         loaderProps={{ children: 'The AI is checking your Answer...' }}
@@ -175,8 +177,8 @@ export function AnswerPage() {
             },
           }}
         />
-        <Group mt="md" grow>
-          <Button onClick={() => handleAnswer()} disabled={answer.length === 0}>
+        <Flex mt="md" gap={8} direction={isMobile ? 'column' : 'row'}>
+          <Button onClick={() => handleAnswer()} disabled={answer.length === 0} fullWidth>
             Submit Answer For Evaluation
           </Button>
           <Button
@@ -186,10 +188,11 @@ export function AnswerPage() {
               navigate('/history');
             }}
             disabled={answer.length === 0}
+            fullWidth
           >
             Save to Continue Later
           </Button>
-        </Group>
+        </Flex>
       </Paper>
     </Container>
   );
