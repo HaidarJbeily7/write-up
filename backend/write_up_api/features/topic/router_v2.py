@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Path, Query, Depends
 from fastapi_pagination import Page, Params
 from typing import Annotated, Optional
 
-from ...features.subscription.queries import increment_credits_spent
+from ...features.subscription.queries import increment_credits_spent, get_user_credits
 from .utils import evaluate_submission_v2
 from ...common.dependencies import check_user_credits, get_current_user
 from ...features.user.models import User
@@ -231,7 +231,8 @@ async def evaluate_topic_submission(
         with Session(db_engine) as db_session:
             # Increment credits spent
             increment_credits_spent(user.id, db_session)
-            notify_credit_spent(user.email, 1)
+            user_credits = get_user_credits(user.id, db_session)
+            notify_credit_spent(user.email, 1, user_credits.credits_allowance - user_credits.credits_spent)
         return response
     except Exception as e:
         if isinstance(e, HTTPException):
