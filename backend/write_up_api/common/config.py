@@ -31,6 +31,10 @@ class Settings(BaseSettings):
     # ADMIN API KEY
     ADMIN_API_KEY: str
 
+    # AZURE VISION SETTINGS
+    VISION_KEY: str
+    VISION_ENDPOINT: str
+
     class Config:
         env_file = ".env"
         case_sensitive = True

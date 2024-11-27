@@ -27,6 +27,9 @@ tenacity = "^9.0.0"
 uvicorn = {extras = ["standard"], version = "^0.32.0"}
 gunicorn = "^23.0.0"
 uvloop = "^0.21.0"
+azure-cognitiveservices-vision-computervision = "^0.9.1"
+pillow = "^11.0.0"
+python-multipart = "^0.0.17"
 
 [tool.poetry.group.dev.dependencies]
 ipython = "^8.29.0"

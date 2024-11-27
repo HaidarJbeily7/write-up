@@ -41,7 +41,7 @@ async def google_callback(request: Request):
         user = create_user(email, name)
         create_user_profile(user.id)
         with Session(db_engine) as session:
-            create_or_update_user_credits(user.id, 10, session)
+            create_or_update_user_credits(user.id, 3, session)
 
     token = create_access_token(data={"sub": user.email})
     return LoginResponse(user=UserResponse(id=user.id, fullname=user.full_name, email=user.email, is_active=user.is_active), token=TokenResponse(access_token=token, token_type="bearer"))

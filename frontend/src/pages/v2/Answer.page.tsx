@@ -13,6 +13,8 @@ import {
   Text,
   Textarea,
   Title,
+  FileButton,
+  Group,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Topic } from '@/components/Topics/types';
@@ -26,6 +28,7 @@ export function AnswerPage() {
   const [answerLoading, setAnswerLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const [answer, setAnswer] = useState('');
+  const [ocrLoading, setOcrLoading] = useState(false);
   const navigate = useNavigate();
   const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 
@@ -126,6 +129,34 @@ export function AnswerPage() {
     setAnswer(value);
   };
 
+  const handleImageUpload = async (file: File | null) => {
+    if (!file) {return;}
+    setOcrLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/v1/ocr/extract-text`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          },
+        }
+      );
+
+      if (response.data.extracted_text) {
+        setAnswer(response.data.extracted_text);
+      }
+    } catch (error) {
+      throw new Error(`Failed to extract text: ${error instanceof Error ? error.message : error}`);
+    } finally {
+      setOcrLoading(false);
+    }
+  };
+
   if (initLoading) {
     return (
       <Flex align="center" justify="center" h="100vh">
@@ -145,6 +176,7 @@ export function AnswerPage() {
         loaderProps={{ children: 'The AI is checking your Answer...' }}
       />
       <LoadingOverlay visible={saveLoading} loaderProps={{ children: 'Saving your answer...' }} />
+      <LoadingOverlay visible={ocrLoading} loaderProps={{ children: 'Extracting text from image...' }} />
       <Paper withBorder shadow="md" p="xl" radius="md" mt="lg">
         <Title order={1} mb="md">
           {topic.category}
@@ -159,9 +191,16 @@ export function AnswerPage() {
       </Paper>
 
       <Paper withBorder shadow="md" p="xl" radius="md" mt="lg">
-        <Title order={3} mb="md">
-          Your Answer
-        </Title>
+        <Group mb="md">
+          <Title order={3}>Your Answer</Title>
+          <FileButton onChange={handleImageUpload} accept="image/*">
+            {(props) => (
+              <Button variant="light" {...props}>
+                Scan Answer from Image
+              </Button>
+            )}
+          </FileButton>
+        </Group>
         <Textarea
           placeholder="Write your answer here..."
           value={answer}
