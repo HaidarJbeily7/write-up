@@ -32,9 +32,13 @@ async def create_payment_intent(
     
     amount = 0
     if plan == "Basic":
-        amount = 999  # $9.99
+        amount = 1200  # $12
     elif plan == "Pro":
-        amount = 1999  # $19.99    
+        amount = 2900  # $29
+    elif plan == "Premium":
+        amount = 4900  # $49
+    elif plan == "Enterprise":
+        amount = 9900  # $99
     else:
         raise HTTPException(status_code=400, detail="Invalid plan selected")
 
@@ -77,9 +81,15 @@ async def payment_success(
                 stripe_customer_id=intent.customer
             )
             # Update user credits
+            credits_map = {
+                "Basic": 10,
+                "Pro": 30,
+                "Premium": 70,
+                "Enterprise": 200
+            }
             await create_or_update_user_credits(
                 user_id=current_user.id,
-                credits_allowance=10 if subscription.plan == "Basic" else 30,
+                credits_allowance=credits_map[subscription.plan],
                 db=db
             )
             return PaymentSuccessResponse(message="Payment confirmed successfully")

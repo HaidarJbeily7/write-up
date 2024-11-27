@@ -20,12 +20,10 @@ export function SubscriptionPage() {
   const [loading, setLoading] = useState(false);
 
   const subscriptionPlans: SubscriptionPlan[] = [
-    { name: 'Basic', price: 9.99, features: ['10 WriteUps', 'Basic analytics'] },
-    {
-      name: 'Pro',
-      price: 19.99,
-      features: ['30 WriteUps', 'Advanced analytics', 'Priority support'],
-    },
+    { name: 'Basic', price: 12, features: ['10 WriteUps', 'Basic analytics'] },
+    { name: 'Pro', price: 29, features: ['30 WriteUps', 'Advanced analytics', 'Priority support'] },
+    { name: 'Premium', price: 49, features: ['70 WriteUps', 'Premium analytics', 'Priority support', '24/7 Customer Service'] },
+    { name: 'Enterprise', price: 99, features: ['200 WriteUps', 'Enterprise analytics', 'Dedicated support', 'Custom integrations', 'Team management'] }
   ];
 
   const handleSubscribe = async (plan: string) => {
