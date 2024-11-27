@@ -1,10 +1,13 @@
-import { Button, Container, Group, Text, Title } from '@mantine/core';
+import { Button, Container, em, Group, Text, Title } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import classes from './Welcome.module.css';
 
 export function WelcomeInternal({ navigate }: { navigate: (path: string) => void }) {
+  const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
+
   return (
     <Container size="md">
-      <Title className={classes.title} ta="center" mt={100}>
+      <Title className={isMobile ? '' : classes.title} ta="center" mt={100}>
         Welcome to{' '}
         <Text inherit variant="gradient" component="span" gradient={{ from: 'blue', to: 'cyan' }}>
           WriteUp
