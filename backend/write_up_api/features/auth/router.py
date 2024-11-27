@@ -43,9 +43,9 @@ async def google_callback(request: Request):
         create_user_profile(user.id)
         with Session(db_engine) as session:
             create_or_update_user_credits(user.id, 3, session)
-
+        notify_user_registered(user.email)
     token = create_access_token(data={"sub": user.email})
-    notify_user_registered(user.email)
+    
     return LoginResponse(user=UserResponse(id=user.id, fullname=user.full_name, email=user.email, is_active=user.is_active), token=TokenResponse(access_token=token, token_type="bearer"))
 
 @auth_router.get("/me", response_model=UserResponse)
