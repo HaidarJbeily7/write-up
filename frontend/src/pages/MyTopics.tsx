@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { IconArrowRight, IconPlus } from '@tabler/icons-react';
+import { IconPlus } from '@tabler/icons-react';
 import axios from 'axios';
 import {
   Button,
@@ -45,7 +45,12 @@ export function MyTopicsPage() {
         method: 'GET',
         url: `${import.meta.env.VITE_BACKEND_URL}/api/v2/topics/me`,
         headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
-        params: { size: pageSize, exam_type: examType },
+        params: {
+          size: pageSize,
+          exam_type: examType,
+          page: pagination.active === 0 ? 1 : pagination.active,
+          category,
+        },
       };
       const { data } = await axios.request(options);
       setTopics(data.items);
@@ -157,7 +162,7 @@ export function MyTopicsPage() {
               gap: '2rem',
               justifyContent: 'center',
               alignContent: 'center',
-              flexDirection: topics.length === 0 && !loading ? 'column' : 'row',
+              flexDirection: topics.length < 3 && !loading ? 'column' : 'column',
             }}
           >
             {loading ? (
@@ -190,8 +195,7 @@ export function MyTopicsPage() {
               onClick={() => setModalOpen(true)}
               size="md"
               variant="light"
-              leftSection={<IconPlus size={14} />}
-              rightSection={<IconArrowRight size={14} />}
+              rightSection={<IconPlus size={14} />}
             >
               Add a New Topic
             </Button>

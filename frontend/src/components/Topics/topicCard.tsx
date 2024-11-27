@@ -44,7 +44,7 @@ export default function TopicCard({ topic }: TopicCardGridProps) {
           {topic.category}
         </Title>
         <Text size="xl" fw={700} mt="md" style={{ textAlign: 'center' }}>
-          {topic.exam_type}
+          {topic.exam_type === 'TOEFL' ? 'Task 1' : 'Task 2'}
         </Text>
         <div style={{ maxHeight: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           <Text>{truncatedQuestion}</Text>
