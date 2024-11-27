@@ -1,25 +1,11 @@
 import { useState } from 'react';
-import {
-  IconBook,
-  IconCreditCard,
-  IconDashboard,
-  IconHistory,
-  IconLogout,
-  IconUser,
-} from '@tabler/icons-react';
+import { IconLogout } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { Code, Group, Image, Text, useMantineColorScheme } from '@mantine/core';
 import { useUserStore } from '@/store/user';
 import { ColorSchemeToggle } from '../ColorSchemeToggle/ColorSchemeToggle';
+import { data } from './data';
 import classes from './Navbar.module.css';
-
-const data = [
-  { link: '/dashboard', label: 'Dashboard', icon: IconDashboard },
-  { link: '/topics', label: 'Topics', icon: IconBook },
-  { link: '/profile', label: 'Profile', icon: IconUser },
-  { link: '/history', label: 'History', icon: IconHistory },
-  { link: '/subscription', label: 'Subscription', icon: IconCreditCard },
-];
 
 export function Navbar() {
   const [active, setActive] = useState('Home');

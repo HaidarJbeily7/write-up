@@ -1,16 +1,10 @@
 import { useState } from 'react';
-import {
-  IconBook,
-  IconCreditCard,
-  IconDashboard,
-  IconHistory,
-  IconLogout,
-  IconUser,
-} from '@tabler/icons-react';
+import { IconLogout } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { Burger, Code, Drawer, Group, Image, Text, useMantineColorScheme } from '@mantine/core';
 import { useUserStore } from '@/store/user';
 import { ColorSchemeToggle } from '../ColorSchemeToggle/ColorSchemeToggle';
+import { data } from './data';
 import styles from './BurgerMenu.module.css';
 
 export function BurgerMenu() {
@@ -18,14 +12,6 @@ export function BurgerMenu() {
   const navigate = useNavigate();
   const { setIsLoggedIn } = useUserStore();
   const { colorScheme } = useMantineColorScheme();
-
-  const data = [
-    { link: '/dashboard', label: 'Dashboard', icon: IconDashboard },
-    { link: '/topics', label: 'Topics', icon: IconBook },
-    { link: '/profile', label: 'Profile', icon: IconUser },
-    { link: '/history', label: 'History', icon: IconHistory },
-    { link: '/subscription', label: 'Subscription', icon: IconCreditCard },
-  ];
 
   const links = data.map((item) => (
     <a

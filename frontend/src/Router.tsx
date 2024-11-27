@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { SigninPage } from './pages/Auth.page';
 import { DashboardPage } from './pages/Dashboard.page';
 import { HomePage } from './pages/Home.page';
+import { MyTopicsPage } from './pages/MyTopics';
 import { PaymentSuccessPage } from './pages/PaymentSuccess.page';
 import { ProfilePage } from './pages/Profile.page';
 import { ProfileEditPage } from './pages/ProfileEdit.page';
@@ -59,6 +60,14 @@ const router = createBrowserRouter([
     element: (
       <ProtectedRoute>
         <TopicsPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/my-topics',
+    element: (
+      <ProtectedRoute>
+        <MyTopicsPage />
       </ProtectedRoute>
     ),
   },
