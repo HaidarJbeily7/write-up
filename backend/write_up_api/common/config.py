@@ -34,6 +34,10 @@ class Settings(BaseSettings):
     # AZURE VISION SETTINGS
     VISION_KEY: str
     VISION_ENDPOINT: str
+    
+    # TELEGRAM SETTINGS
+    TELEGRAM_API_KEY: str
+    TELEGRAM_CHAT_ID: str
 
     class Config:
         env_file = ".env"

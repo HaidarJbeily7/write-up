@@ -27,6 +27,7 @@ from .queries import (
     get_user_submission_history_v2,
     add_new_user_defined_topic
 )
+from ...features.notifications.logs import notify_credit_spent
 
 topic_router_v2: APIRouter = APIRouter(tags=["topic_v2"])
 
@@ -230,7 +231,7 @@ async def evaluate_topic_submission(
         with Session(db_engine) as db_session:
             # Increment credits spent
             increment_credits_spent(user.id, db_session)
-
+            notify_credit_spent(user.email, 1)
         return response
     except Exception as e:
         if isinstance(e, HTTPException):

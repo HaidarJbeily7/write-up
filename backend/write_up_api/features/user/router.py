@@ -8,6 +8,7 @@ from .models import User
 from .dto import UserProfileUpdate, UserProfileResponse
 from .queries import update_user_profile, get_user_profile, activate_user
 from ...common.dependencies import get_current_user, get_db
+from ...features.notifications.logs import notify_customer_activated
 
 user_router: APIRouter = APIRouter(tags=["user"])
 
@@ -19,6 +20,7 @@ async def update_profile(
     profile = update_user_profile(user.id, profile_data.model_dump())
     if not user.is_active:
         activate_user(user.id)
+        notify_customer_activated(user.email)
     return UserProfileResponse(
         user_id=profile.user_id,
         desired_band_score=profile.desired_band_score,
