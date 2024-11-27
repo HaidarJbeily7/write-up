@@ -14,6 +14,7 @@ from .models import (
     SubmissionHistoryV2,
     TopicSubmissionResponseV2,
     TopicSubmissionWithTopicAndEvaluationV2,
+    TopicCreate
 )
 from .queries import (
     add_topic_submission,
@@ -24,6 +25,7 @@ from .queries import (
     get_user_topic_submissions_v2,
     get_user_topic_submission_v2,
     get_user_submission_history_v2,
+    add_new_user_defined_topic
 )
 
 topic_router_v2: APIRouter = APIRouter(tags=["topic_v2"])
@@ -42,6 +44,32 @@ async def get_topics(
         difficulty_level=difficulty_level,
         params=params,
     )
+
+@topic_router_v2.get("/me", response_model=Page[Topic])
+async def get_user_defined_topics(
+    exam_type: Optional[ExamType] = Query(None),
+    category: Optional[str] = Query(None),
+    difficulty_level: Optional[int] = Query(None, ge=1, le=10),
+    params: Params = Depends(),
+    user: User = Depends(get_current_user)
+) -> Page[Topic]:
+    return get_filtered_topics_paginated(
+        exam_type=exam_type,
+        category=category,
+        difficulty_level=difficulty_level,
+        created_by=user.id,
+        params=params,
+    )
+
+@topic_router_v2.post("/me", response_model=Topic)
+async def create_user_defined_topic(
+    topic: TopicCreate,
+    user: User = Depends(get_current_user)
+) -> Topic:
+    try:
+        return add_new_user_defined_topic(topic, user.id)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @topic_router_v2.get("/submissions", response_model=list[SubmissionHistoryV2])
 async def get_user_submission_history_endpoint(

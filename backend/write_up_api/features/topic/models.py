@@ -19,6 +19,7 @@ class Topic(SQLModel, table=True):
     category: str = Field(index=True)
     exam_type: ExamType
     difficulty_level: Optional[int] = Field(default=None)
+    created_by: str = Field(foreign_key="users.id", default=None)
     topic_metadata: Optional[dict] = Field(default=None, sa_type=JSON)
 
     class Config:
@@ -28,6 +29,7 @@ class Topic(SQLModel, table=True):
                 "category": "Education",
                 "exam_type": "IELTS",
                 "difficulty_level": 5,
+                "created_by": "123e4567-e89b-12d3-a456-426614174000",
                 "topic_metadata": {
                     "source": "Official IELTS practice materials",
                     "year": 2023,
@@ -129,3 +131,8 @@ class SubmissionHistoryV2(BaseModel):
     exam_type: ExamType
     topic_metadata: dict
     submissions: list[TopicSubmissionWithEvaluationV2]
+
+class TopicCreate(BaseModel):
+    question: str
+    category: str
+    exam_type: ExamType

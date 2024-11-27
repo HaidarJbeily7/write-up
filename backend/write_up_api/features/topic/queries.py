@@ -2,7 +2,7 @@ from sqlmodel import Session, select
 from typing import List, Optional
 import logging
 import logging
-from .models import SubmissionEvaluation, SubmissionEvaluationV2, SubmissionHistoryV2, Topic, ExamType, TopicSubmission, TopicSubmissionWithEvaluationV2, TopicSubmissionWithTopicAndEvaluation, SubmissionHistory, TopicSubmissionWithEvaluation, TopicSubmissionWithTopicAndEvaluationV2
+from .models import SubmissionEvaluation, SubmissionEvaluationV2, SubmissionHistoryV2, Topic, ExamType, TopicSubmission, TopicSubmissionWithEvaluationV2, TopicSubmissionWithTopicAndEvaluation, SubmissionHistory, TopicSubmissionWithEvaluation, TopicSubmissionWithTopicAndEvaluationV2, TopicCreate
 from ...common.db_engine import db_engine
 from fastapi_pagination.ext.sqlalchemy import paginate
 from fastapi_pagination import Params
@@ -23,7 +23,8 @@ def get_filtering_query(
     exam_type: Optional[ExamType] = None,
     category: Optional[str] = None,
     task_type: Optional[str] = None,
-    difficulty_level: Optional[int] = None
+    difficulty_level: Optional[int] = None,
+    
 ):
     query = select(Topic)
 
@@ -65,11 +66,15 @@ def get_filtered_topics_paginated(
     task_type: Optional[str] = None,
     difficulty_level: Optional[int] = None,
     params: Params = Params(),
+    created_by: str = None
 ) -> List[Topic]:
     try:
         with Session(db_engine) as session:
             query = get_filtering_query(exam_type, category, task_type, difficulty_level)
-
+            if created_by:
+                query = query.where(Topic.created_by == created_by)
+            else:
+                query = query.where(Topic.created_by == "")
             topics = paginate(session, query, params=params)
             return topics
     except Exception as e:
@@ -166,7 +171,22 @@ def add_new_topics(topics: List[Topic]) -> None:
         logger.error(f"Database error while adding new topics: {e}")
         raise
 
-
+def add_new_user_defined_topic(topic: TopicCreate, created_by: str) -> Topic:
+    try:
+        with Session(db_engine) as session:
+            topicDb = Topic(
+                question=topic.question,
+                category=topic.category,
+                exam_type=topic.exam_type,
+                created_by=created_by
+            )
+            session.add(topicDb)
+            session.commit()
+            session.refresh(topicDb)
+            return topicDb
+    except Exception as e:
+        logger.error(f"Database error while creating topic: {e}")
+        raise
 
 def get_user_topic_submissions(topic_id: str, user_id: str) -> list[TopicSubmissionWithTopicAndEvaluation]:
     try:
