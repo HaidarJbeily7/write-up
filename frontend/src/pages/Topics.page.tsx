@@ -21,8 +21,13 @@ export function TopicsPage() {
   const fetchTopics = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/topics/`, {
-        params: { size: pageSize, exam_type: examType, category },
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v2/topics/`, {
+        params: {
+          size: pageSize,
+          exam_type: examType === 'Task 1' ? 'TOEFL' : 'IELTS',
+          category,
+          page: pagination.active === 0 ? 1 : pagination.active,
+        },
       });
       setTopics(response.data.items);
       setTotalPages(response.data.pages);
@@ -49,9 +54,9 @@ export function TopicsPage() {
           </Title>
           <Flex mb="lg" gap="md" justify="center">
             <Select
-              label="Exam Type"
-              placeholder="Select Exam Type"
-              data={['TOEFL', 'IELTS']}
+              label="Task Category"
+              placeholder="Select Task Category"
+              data={['Task 1', 'Task 2']}
               value={examType}
               onChange={(value) => {
                 setExamType(value);
