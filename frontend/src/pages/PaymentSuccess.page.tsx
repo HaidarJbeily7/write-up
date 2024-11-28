@@ -21,7 +21,7 @@ export function PaymentSuccessPage() {
             },
             {
               headers: {
-                Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+                Authorization: `Bearer ${import.meta.env.TOKEN}`,
               },
             }
           )

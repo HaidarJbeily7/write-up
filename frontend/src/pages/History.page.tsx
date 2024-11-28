@@ -61,7 +61,7 @@ export function HistoryPage() {
       const options = {
         method: 'GET',
         url: `${import.meta.env.VITE_BACKEND_URL}/api/v1/topics/submissions`,
-        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
+        headers: { Authorization: `Bearer ${import.meta.env.TOKEN}` },
       };
       setLoading(true);
       try {

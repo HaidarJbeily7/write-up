@@ -48,7 +48,7 @@ export function AnswerPage() {
           `${import.meta.env.VITE_BACKEND_URL}/api/v1/topics/${topicId}/submissions/${submissionId}`,
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+              Authorization: `Bearer ${import.meta.env.TOKEN}`,
             },
           }
         );
@@ -77,7 +77,7 @@ export function AnswerPage() {
         url: `${import.meta.env.VITE_BACKEND_URL}/api/v1/topics/${topicId}/submissions/${submissionIdUpdated}/evaluate`,
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          Authorization: `Bearer ${import.meta.env.TOKEN}`,
         },
         data: { answer },
       };
@@ -101,7 +101,7 @@ export function AnswerPage() {
         url: `${import.meta.env.VITE_BACKEND_URL}/api/v1/topics/${topicId}/submissions/${submissionIdUpdated}`,
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          Authorization: `Bearer ${import.meta.env.TOKEN}`,
         },
         data: { answer },
       };

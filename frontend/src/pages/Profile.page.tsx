@@ -45,7 +45,7 @@ export function ProfilePage() {
           `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/profile`,
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+              Authorization: `Bearer ${import.meta.env.TOKEN}`,
             },
           }
         );

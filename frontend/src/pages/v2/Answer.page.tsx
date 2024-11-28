@@ -6,15 +6,15 @@ import {
   Button,
   Container,
   em,
+  FileButton,
   Flex,
+  Group,
   Loader,
   LoadingOverlay,
   Paper,
   Text,
   Textarea,
   Title,
-  FileButton,
-  Group,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Topic } from '@/components/Topics/types';
@@ -55,7 +55,7 @@ export function AnswerPage() {
           }/api/v2/topics/${topicId}/submissions/${submissionId}`,
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+              Authorization: `Bearer ${import.meta.env.TOKEN}`,
             },
           }
         );
@@ -86,7 +86,7 @@ export function AnswerPage() {
         }/api/v2/topics/${topicId}/submissions/${submissionIdUpdated}/evaluate`,
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          Authorization: `Bearer ${import.meta.env.TOKEN}`,
         },
         data: { answer },
       };
@@ -112,7 +112,7 @@ export function AnswerPage() {
         }/api/v1/topics/${topicId}/submissions/${submissionIdUpdated}`,
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+          Authorization: `Bearer ${import.meta.env.TOKEN}`,
         },
         data: { answer },
       };
@@ -130,7 +130,9 @@ export function AnswerPage() {
   };
 
   const handleImageUpload = async (file: File | null) => {
-    if (!file) {return;}
+    if (!file) {
+      return;
+    }
     setOcrLoading(true);
     try {
       const formData = new FormData();
@@ -142,7 +144,7 @@ export function AnswerPage() {
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+            Authorization: `Bearer ${import.meta.env.TOKEN}`,
           },
         }
       );
@@ -176,7 +178,10 @@ export function AnswerPage() {
         loaderProps={{ children: 'The AI is checking your Answer...' }}
       />
       <LoadingOverlay visible={saveLoading} loaderProps={{ children: 'Saving your answer...' }} />
-      <LoadingOverlay visible={ocrLoading} loaderProps={{ children: 'Extracting text from image...' }} />
+      <LoadingOverlay
+        visible={ocrLoading}
+        loaderProps={{ children: 'Extracting text from image...' }}
+      />
       <Paper withBorder shadow="md" p="xl" radius="md" mt="lg">
         <Title order={1} mb="md">
           {topic.category}

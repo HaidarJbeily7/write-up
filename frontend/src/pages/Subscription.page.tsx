@@ -22,8 +22,22 @@ export function SubscriptionPage() {
   const subscriptionPlans: SubscriptionPlan[] = [
     { name: 'Basic', price: 12, features: ['10 WriteUps', 'Basic analytics'] },
     { name: 'Pro', price: 29, features: ['30 WriteUps', 'Advanced analytics', 'Priority support'] },
-    { name: 'Premium', price: 49, features: ['70 WriteUps', 'Premium analytics', 'Priority support', '24/7 Customer Service'] },
-    { name: 'Enterprise', price: 99, features: ['200 WriteUps', 'Enterprise analytics', 'Dedicated support', 'Custom integrations', 'Team management'] }
+    {
+      name: 'Premium',
+      price: 49,
+      features: ['70 WriteUps', 'Premium analytics', 'Priority support', '24/7 Customer Service'],
+    },
+    {
+      name: 'Enterprise',
+      price: 99,
+      features: [
+        '200 WriteUps',
+        'Enterprise analytics',
+        'Dedicated support',
+        'Custom integrations',
+        'Team management',
+      ],
+    },
   ];
 
   const handleSubscribe = async (plan: string) => {
@@ -34,7 +48,7 @@ export function SubscriptionPage() {
         { plan },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+            Authorization: `Bearer ${import.meta.env.TOKEN}`,
           },
         }
       );

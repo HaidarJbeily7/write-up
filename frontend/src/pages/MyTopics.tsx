@@ -44,7 +44,7 @@ export function MyTopicsPage() {
       const options = {
         method: 'GET',
         url: `${import.meta.env.VITE_BACKEND_URL}/api/v2/topics/me`,
-        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` },
+        headers: { Authorization: `Bearer ${import.meta.env.TOKEN}` },
         params: {
           size: pageSize,
           exam_type: examType,
@@ -75,7 +75,7 @@ export function MyTopicsPage() {
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+            Authorization: `Bearer ${import.meta.env.TOKEN}`,
           },
         }
       );
