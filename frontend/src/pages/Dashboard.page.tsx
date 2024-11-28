@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Container, Flex, Grid, Skeleton, Text, Title } from '@mantine/core';
-import AskForHelpButton from '@/components/AskForHelp/AskForHelpButton';
+// import AskForHelpButton from '@/components/AskForHelp/AskForHelpButton';
 import { BurgerMenu } from '@/components/Navbar/BurgerMenu';
 import { Navbar } from '@/components/Navbar/Navbar';
 import TopicCardGrid from '@/components/Topics/topicCardGrid';
@@ -31,7 +31,7 @@ export function DashboardPage() {
 
   return (
     <Grid>
-      <AskForHelpButton />
+      {/* <AskForHelpButton /> */}
       <Navbar />
       <BurgerMenu />
       <Grid.Col span="auto">

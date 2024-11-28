@@ -45,7 +45,7 @@ export function ProfilePage() {
           `${import.meta.env.VITE_BACKEND_URL}/api/v1/users/profile`,
           {
             headers: {
-              Authorization: `Bearer ${import.meta.env.TOKEN}`,
+              Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
             },
           }
         );
@@ -62,7 +62,7 @@ export function ProfilePage() {
 
   return (
     <Grid w="100%" m={0}>
-      <AskForHelpButton />
+      {/* <AskForHelpButton /> */}
       <Navbar />
       <BurgerMenu />
       <Container size="90%" p={0} px={0} mt={32}>

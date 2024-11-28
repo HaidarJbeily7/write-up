@@ -61,7 +61,7 @@ export function HistoryPage() {
       const options = {
         method: 'GET',
         url: `${import.meta.env.VITE_BACKEND_URL}/api/v1/topics/submissions`,
-        headers: { Authorization: `Bearer ${import.meta.env.TOKEN}` },
+        headers: { Authorization: `Bearer ${import.meta.env.VITE_TOKEN}` },
       };
       setLoading(true);
       try {
@@ -90,7 +90,7 @@ export function HistoryPage() {
 
   return (
     <Flex>
-      <AskForHelpButton />
+      {/* <AskForHelpButton /> */}
       <Navbar />
       <BurgerMenu />
       <Flex direction="column" mih="100vh" w="100%" align="center">

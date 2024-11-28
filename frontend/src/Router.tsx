@@ -16,13 +16,13 @@ import { useUserStore } from './store/user';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuth = useUserStore((state) => state.isLoggedIn);
-  const isActive = useUserStore((state) => state.user.isActive);
+  // const isActive = useUserStore((state) => state.user.isActive);
   if (!isAuth) {
     return <Navigate to="/auth" replace />;
   }
-  if (!isActive) {
-    return <Navigate to="/profile/edit" replace />;
-  }
+  // if (!isActive) {
+  //   return <Navigate to="/profile/edit" replace />;
+  // }
   return children;
 };
 

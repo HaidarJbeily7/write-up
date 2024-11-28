@@ -1,36 +1,17 @@
-import axios from 'axios';
-import GoogleButton from 'react-google-button';
-import { Container, Paper, Stack, Title } from '@mantine/core';
+import { Flex, Paper, Stack, Title } from '@mantine/core';
+import { ConnectWalletButton } from '@/components/ConnectWalletButton/ConnectWalletButton';
 
 export function SigninPage() {
-  const handleGoogleLogin = async () => {
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/login/google`,
-        { withCredentials: true }
-      );
-
-      if (response.data.url) {
-        // Redirect to Google's login page
-        window.location.href = response.data.url;
-      }
-    } catch (error) {
-      throw new Error(
-        `Failed to get a login link: ${error instanceof Error ? error.message : error}`
-      );
-    }
-  };
-
   return (
-    <Container>
+    <Flex mih="100vh" gap="xl" justify="center" align="center" direction="column" wrap="wrap">
       <Title order={1} mt="xl" mb="xl">
-        Sign In with Google
+        Sign In with Your Near Wallet
       </Title>
       <Paper shadow="xs" p="xl">
         <Stack>
-          <GoogleButton onClick={handleGoogleLogin} />
+          <ConnectWalletButton />
         </Stack>
       </Paper>
-    </Container>
+    </Flex>
   );
 }
