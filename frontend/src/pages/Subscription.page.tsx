@@ -48,7 +48,7 @@ export function SubscriptionPage() {
         { plan },
         {
           headers: {
-            Authorization: `Bearer ${import.meta.env.TOKEN}`,
+            Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
           },
         }
       );
@@ -64,7 +64,7 @@ export function SubscriptionPage() {
 
   return (
     <Grid>
-      <AskForHelpButton />
+      {/* <AskForHelpButton /> */}
       <Navbar />
       <BurgerMenu />
       <Container size="xl">

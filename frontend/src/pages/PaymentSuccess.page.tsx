@@ -21,7 +21,7 @@ export function PaymentSuccessPage() {
             },
             {
               headers: {
-                Authorization: `Bearer ${import.meta.env.TOKEN}`,
+                Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
               },
             }
           )

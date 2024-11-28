@@ -51,7 +51,7 @@ export function ProfileEditPage() {
       };
       await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/v1/users/profile`, profileData, {
         headers: {
-          Authorization: `Bearer ${import.meta.env.TOKEN}`,
+          Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
         },
       });
       notifications.show({
@@ -62,7 +62,7 @@ export function ProfileEditPage() {
       // Update user data after profile update
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/me`, {
         headers: {
-          Authorization: `Bearer ${import.meta.env.TOKEN}`,
+          Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
         },
       });
       const updatedUser = response.data;

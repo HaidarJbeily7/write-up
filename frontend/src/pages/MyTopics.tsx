@@ -44,7 +44,7 @@ export function MyTopicsPage() {
       const options = {
         method: 'GET',
         url: `${import.meta.env.VITE_BACKEND_URL}/api/v2/topics/me`,
-        headers: { Authorization: `Bearer ${import.meta.env.TOKEN}` },
+        headers: { Authorization: `Bearer ${import.meta.env.VITE_TOKEN}` },
         params: {
           size: pageSize,
           exam_type: examType,
@@ -75,7 +75,7 @@ export function MyTopicsPage() {
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${import.meta.env.TOKEN}`,
+            Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
           },
         }
       );
@@ -103,7 +103,7 @@ export function MyTopicsPage() {
         visible={submitLoading}
         loaderProps={{ children: 'Submitting Your Topic...' }}
       />
-      <AskForHelpButton />
+      {/* <AskForHelpButton /> */}
       <Navbar />
       <BurgerMenu />
       <Flex direction="column" mih="100vh" w="100%">

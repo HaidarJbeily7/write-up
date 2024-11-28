@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { IconLogout } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { Burger, Code, Drawer, Group, Image, Text, useMantineColorScheme } from '@mantine/core';
 import { useUserStore } from '@/store/user';
+import { WalletContext } from '@/WalletContext';
 import { ColorSchemeToggle } from '../ColorSchemeToggle/ColorSchemeToggle';
 import { data } from './data';
 import styles from './BurgerMenu.module.css';
@@ -12,6 +13,7 @@ export function BurgerMenu() {
   const navigate = useNavigate();
   const { setIsLoggedIn } = useUserStore();
   const { colorScheme } = useMantineColorScheme();
+  const { selector } = useContext(WalletContext);
 
   const links = data.map((item) => (
     <a
@@ -63,10 +65,12 @@ export function BurgerMenu() {
         <a
           href="#"
           className={styles.logoutLink}
-          onClick={(event) => {
+          onClick={async (event) => {
             event.preventDefault();
             setIsLoggedIn(false);
-            setOpened(false);
+            localStorage.setItem('already_redirected', 'false');
+            const wallet = await selector?.wallet();
+            await wallet?.signOut();
           }}
         >
           <IconLogout className={styles.icon} stroke={1.5} /> <span>Logout</span>

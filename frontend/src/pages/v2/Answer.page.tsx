@@ -55,7 +55,7 @@ export function AnswerPage() {
           }/api/v2/topics/${topicId}/submissions/${submissionId}`,
           {
             headers: {
-              Authorization: `Bearer ${import.meta.env.TOKEN}`,
+              Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
             },
           }
         );
@@ -86,7 +86,7 @@ export function AnswerPage() {
         }/api/v2/topics/${topicId}/submissions/${submissionIdUpdated}/evaluate`,
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${import.meta.env.TOKEN}`,
+          Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
         },
         data: { answer },
       };
@@ -112,7 +112,7 @@ export function AnswerPage() {
         }/api/v1/topics/${topicId}/submissions/${submissionIdUpdated}`,
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${import.meta.env.TOKEN}`,
+          Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
         },
         data: { answer },
       };
@@ -144,7 +144,7 @@ export function AnswerPage() {
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${import.meta.env.TOKEN}`,
+            Authorization: `Bearer ${import.meta.env.VITE_TOKEN}`,
           },
         }
       );

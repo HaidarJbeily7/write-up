@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { IconLogout } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { Code, Group, Image, Text, useMantineColorScheme } from '@mantine/core';
 import { useUserStore } from '@/store/user';
+import { WalletContext } from '@/WalletContext';
 import { ColorSchemeToggle } from '../ColorSchemeToggle/ColorSchemeToggle';
 import { data } from './data';
 import classes from './Navbar.module.css';
@@ -12,6 +13,7 @@ export function Navbar() {
   const navigate = useNavigate();
   const { setIsLoggedIn } = useUserStore();
   const { colorScheme } = useMantineColorScheme();
+  const { selector } = useContext(WalletContext);
 
   const links = data.map((item) => (
     <a
@@ -57,7 +59,10 @@ export function Navbar() {
         <a
           href="#"
           className={classes.link}
-          onClick={(event) => {
+          onClick={async (event) => {
+            localStorage.setItem('already_redirected', 'false');
+            const wallet = await selector?.wallet();
+            await wallet?.signOut();
             event.preventDefault();
             setIsLoggedIn(false);
           }}
