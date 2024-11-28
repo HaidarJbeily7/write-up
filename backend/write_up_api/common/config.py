@@ -11,7 +11,7 @@ class Settings(BaseSettings):
 
 
     # CORS settings
-    BACKEND_CORS_ORIGINS: list = ["http://localhost:3000", "http://localhost:8080", "http://localhost:5173", "https://gray-pond-02a298600.5.azurestaticapps.net"]
+    BACKEND_CORS_ORIGINS: list = ["http://localhost:3000", "http://localhost:8080", "http://localhost:5173", "https://gray-pond-02a298600.5.azurestaticapps.net", "https://write-up-psi.vercel.app"]
 
     # GOOGLE SETTINGS
     GOOGLE_CLIENT_ID: str
