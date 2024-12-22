@@ -22,7 +22,7 @@ def get_all_topics() -> List[Topic]:
 def get_filtering_query(
     exam_type: Optional[ExamType] = None,
     category: Optional[str] = None,
-    task_type: Optional[str] = None,
+    task_number: Optional[int] = None,
     difficulty_level: Optional[int] = None,
     
 ):
@@ -32,10 +32,8 @@ def get_filtering_query(
         query = query.where(Topic.exam_type == exam_type)
     if category:
         query = query.where(Topic.category == category)
-    if task_type:
-        pass
-        # FIXME: This is a hack to get the task type from the topic metadata
-        # query = query.where(Topic.topic_metadata == f'{{"task_type": "{task_type}"}}')
+    if task_number:
+        query = query.where(Topic.task_number == task_number)
     if difficulty_level:
         query = query.where(Topic.difficulty_level == difficulty_level)
 
@@ -46,13 +44,13 @@ def get_filtering_query(
 def get_filtered_topics(
     exam_type: Optional[ExamType] = None,
     category: Optional[str] = None,
-    task_type: Optional[str] = None,
+    task_number: Optional[int] = None,
     difficulty_level: Optional[int] = None,
 ) -> List[Topic]:
     try:
         with Session(db_engine) as session:
             query = get_filtering_query(
-                exam_type, category, task_type, difficulty_level)
+                exam_type, category, task_number, difficulty_level)
 
             topics = session.exec(query).all()
             return topics
@@ -63,14 +61,14 @@ def get_filtered_topics(
 def get_filtered_topics_paginated(
     exam_type: Optional[ExamType] = None,
     category: Optional[str] = None,
-    task_type: Optional[str] = None,
+    task_number: Optional[int] = None,
     difficulty_level: Optional[int] = None,
     params: Params = Params(),
     created_by: str = None
 ) -> List[Topic]:
     try:
         with Session(db_engine) as session:
-            query = get_filtering_query(exam_type, category, task_type, difficulty_level)
+            query = get_filtering_query(exam_type, category, task_number, difficulty_level)
             if created_by:
                 query = query.where(Topic.created_by == created_by)
             else:
@@ -324,12 +322,13 @@ def get_user_submission_history(user_id: str) -> list[SubmissionHistory]:
             
             # Create SubmissionHistory objects from grouped data
             for topic_id, data in topic_submissions.items():
-                topic = data['topic']
+                topic: Topic = data['topic']
                 submissions.append(SubmissionHistory(
                     id=topic.id,
                     question=topic.question,
                     category=topic.category,
                     exam_type=topic.exam_type,
+                    task_number=topic.task_number,
                     topic_metadata=topic.topic_metadata,
                     submissions=data['submissions']
                 ))
@@ -373,12 +372,13 @@ def get_user_submission_history_v2(user_id: str) -> list[SubmissionHistoryV2]:
 
             # Create SubmissionHistory objects from grouped data
             for topic_id, data in topic_submissions.items():
-                topic = data['topic']
+                topic: Topic = data['topic']
                 submissions.append(SubmissionHistoryV2(
                     id=topic.id,
                     question=topic.question,
                     category=topic.category,
                     exam_type=topic.exam_type,
+                    task_number=topic.task_number,
                     topic_metadata=topic.topic_metadata,
                     submissions=data['submissions']
                 ))

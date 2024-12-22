@@ -15,25 +15,27 @@ class Topic(SQLModel, table=True):
     __tablename__ = 'topics'
 
     id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True, index=True)
-    question: str = Field(index=True, sa_type=Text)
+    question: str = Field(sa_type=Text)
     category: str = Field(index=True)
     exam_type: ExamType
+    task_number: int = Field(default=2, description="The task number of the topic, e.g. Task 1 for IELTS")
     difficulty_level: Optional[int] = Field(default=None)
-    created_by: str = Field(foreign_key="users.id", default=None)
+    created_by: Optional[str] = Field(default=None)
     topic_metadata: Optional[dict] = Field(default=None, sa_type=JSON)
 
     class Config:
         json_schema_extra = {
             "example": {
                 "id": "123e4567-e89b-12d3-a456-426614174000",
+                "question": "In nearly all science... What is the reason for this? What could ...?",
                 "category": "Education",
                 "exam_type": "IELTS",
+                "task_number": 1,
                 "difficulty_level": 5,
                 "created_by": "123e4567-e89b-12d3-a456-426614174000",
                 "topic_metadata": {
                     "source": "Official IELTS practice materials",
                     "year": 2023,
-                    "task_type": "Task 1"
                 }
             }
         }
@@ -120,6 +122,7 @@ class SubmissionHistory(BaseModel):
     question: str
     category: str
     exam_type: ExamType
+    task_number: int
     topic_metadata: dict
     submissions: list[TopicSubmissionWithEvaluation]
 
@@ -129,6 +132,7 @@ class SubmissionHistoryV2(BaseModel):
     question: str
     category: str
     exam_type: ExamType
+    task_number: int
     topic_metadata: dict
     submissions: list[TopicSubmissionWithEvaluationV2]
 
@@ -136,3 +140,4 @@ class TopicCreate(BaseModel):
     question: str
     category: str
     exam_type: ExamType
+    task_number: int
