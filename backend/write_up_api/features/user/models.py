@@ -13,6 +13,7 @@ class User(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow, sa_column_kwargs={"onupdate": datetime.utcnow})
     is_active: bool = Field(default=True)
+    role: str = Field(default="NORMAL")  # Can be "ADMIN" or "NORMAL"
 
     def __repr__(self):
         return f"<User(id={self.id}, email={self.email})>"

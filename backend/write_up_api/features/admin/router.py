@@ -5,7 +5,10 @@ from typing import Optional
 from ...features.topic.models import SubmissionEvaluationV2, TopicSubmission
 from ...features.topic.utils import evaluate_submission_v2
 from sqlalchemy.orm import Session
-from ...common.dependencies import get_db
+from ...common.dependencies import get_db, is_admin
+from ...features.user.models import User
+from ...features.subscription.models import UserCredits
+
 
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 admin_router = APIRouter(prefix="/admin", tags=["admin"])
@@ -52,3 +55,20 @@ async def migrate_evaluations(
             status_code=500,
             detail=f"Error during migration: {str(e)}"
         )
+
+@admin_router.get("/users")
+async def get_all_users(db: Session = Depends(get_db), is_admin: bool = Depends(is_admin)):
+    return db.query(User).all()
+
+
+@admin_router.post("/users/{user_id}/credits")
+async def add_credits_to_user(user_id: str, credits: int, db: Session = Depends(get_db), is_admin: bool = Depends(is_admin)):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    user_credits = db.query(UserCredits).filter(UserCredits.user_id == user_id).first()
+    if not user_credits:
+        raise HTTPException(status_code=404, detail="User credits not found")
+    user_credits.credits_allowance += credits
+    db.commit()
+    return {"message": f"Successfully added {credits} credits to user {user_id}"}

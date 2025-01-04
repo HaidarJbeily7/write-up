@@ -8,6 +8,7 @@ import requests
 from ...features.subscription.queries import create_or_update_user_credits
 from sqlmodel import Session
 from ...common.db_engine import db_engine
+from ...features.user.models import User
 from ...features.notifications.logs import notify_user_registered
 
 auth_router: APIRouter = APIRouter(tags=["auth"])
@@ -46,11 +47,11 @@ async def google_callback(request: Request):
         notify_user_registered(user.email)
     token = create_access_token(data={"sub": user.email})
     
-    return LoginResponse(user=UserResponse(id=user.id, fullname=user.full_name, email=user.email, is_active=user.is_active), token=TokenResponse(access_token=token, token_type="bearer"))
+    return LoginResponse(user=UserResponse(id=user.id, fullname=user.full_name, email=user.email, is_active=user.is_active, role=user.role), token=TokenResponse(access_token=token, token_type="bearer"))
 
 @auth_router.get("/me", response_model=UserResponse)
-async def get_current_user_info(current_user: UserResponse = Depends(get_current_user)) -> UserResponse:
-    return UserResponse(id=current_user.id, fullname=current_user.full_name, email=current_user.email, is_active=current_user.is_active)
+async def get_current_user_info(current_user: User = Depends(get_current_user)) -> UserResponse:
+    return UserResponse(id=current_user.id, fullname=current_user.full_name, email=current_user.email, is_active=current_user.is_active, role=current_user.role)
 
 
 @auth_router.post("/refresh-token", response_model=TokenResponse)

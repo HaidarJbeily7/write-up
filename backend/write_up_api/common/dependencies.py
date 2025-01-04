@@ -81,3 +81,8 @@ async def check_user_credits(user: Annotated[User, Depends(get_current_user)]) -
         return True
     except Exception as e:
         raise e
+
+async def is_admin(user: Annotated[User, Depends(get_current_user)]) -> bool:
+    if user.role != "ADMIN":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    return True
