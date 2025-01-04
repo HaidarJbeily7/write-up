@@ -1,4 +1,5 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
+import { AdminPage } from './pages/Admin.page';
 import { SigninPage } from './pages/Auth.page';
 import { DashboardPage } from './pages/Dashboard.page';
 import { HomePage } from './pages/Home.page';
@@ -22,6 +23,14 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   }
   if (!isActive) {
     return <Navigate to="/profile/edit" replace />;
+  }
+  return children;
+};
+
+const AdminRoute = ({ children }: { children: React.ReactNode }) => {
+  const isAdmin = useUserStore((state) => state.user.role === 'ADMIN');
+  if (!isAdmin) {
+    return <Navigate to="/dashboard" replace />;
   }
   return children;
 };
@@ -125,6 +134,14 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <PaymentSuccessPage />
       </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/admin',
+    element: (
+      <AdminRoute>
+        <AdminPage />
+      </AdminRoute>
     ),
   },
 ]);

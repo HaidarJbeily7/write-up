@@ -66,7 +66,7 @@ export function ProfileEditPage() {
         },
       });
       const updatedUser = response.data;
-      setUser(updatedUser, updatedUser.is_active);
+      setUser(updatedUser, updatedUser.is_active, updatedUser.role);
       navigate('/profile');
     } catch (error) {
       notifications.show({

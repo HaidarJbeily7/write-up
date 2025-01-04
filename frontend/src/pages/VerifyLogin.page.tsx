@@ -17,7 +17,7 @@ export function VerifyLoginPage() {
             `${import.meta.env.VITE_BACKEND_URL}/api/v1/auth/google/callback?code=${code}`
           );
           const { user, token } = response.data;
-          setUser(user, user.is_active);
+          setUser(user, user.is_active, user.role);
           setIsLoggedIn(true);
           localStorage.setItem('access_token', token.access_token);
 
