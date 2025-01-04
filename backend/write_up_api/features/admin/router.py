@@ -58,7 +58,27 @@ async def migrate_evaluations(
 
 @admin_router.get("/users")
 async def get_all_users(db: Session = Depends(get_db), is_admin: bool = Depends(is_admin)):
-    return db.query(User).all()
+    users = db.query(User).all()
+    user_credits = db.query(UserCredits).all()
+    
+    # Create a mapping of user_id to credits
+    credits_map = {uc.user_id: uc for uc in user_credits}
+    
+    # Combine user data with their credits
+    result = []
+    for user in users:
+        user_dict = {
+            "id": user.id,
+            "email": user.email,
+            "full_name": user.full_name,
+            "is_active": user.is_active,
+            "role": user.role,
+            "credits_allowance": credits_map.get(user.id).credits_allowance if user.id in credits_map else 0,
+            "credits_spent": credits_map.get(user.id).credits_spent if user.id in credits_map else 0
+        }
+        result.append(user_dict)
+        
+    return result
 
 
 @admin_router.post("/users/{user_id}/credits")
