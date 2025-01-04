@@ -20,6 +20,7 @@ class UserResponse(BaseModel):
     fullname: str
     email: str
     is_active: bool
+    role: str
 
 class RegistrationResponse(BaseModel):
     user: UserResponse
