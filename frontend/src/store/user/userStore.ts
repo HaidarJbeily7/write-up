@@ -7,16 +7,18 @@ interface User {
   joinDate: Date;
   totalWriteUps: number;
   isActive: boolean;
+  role: string;
 }
 
 interface UserSlice {
   user: User;
   isLoggedIn: boolean;
-  setUser: (user: User, isActive: boolean) => void;
+  setUser: (user: User, isActive: boolean, role: string) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
   login: (user: User) => void;
   logout: () => void;
   setIsActive: (isActive: boolean) => void;
+  setRole: (role: string) => void;
 }
 
 const getInitialUser = (): User => {
@@ -35,15 +37,16 @@ const getInitialUser = (): User => {
     joinDate: new Date(),
     totalWriteUps: 0,
     isActive: false,
+    role: '',
   };
 };
 
 export const useUserStore = create<UserSlice>((set) => ({
   user: getInitialUser(),
   isLoggedIn: localStorage.getItem('isLoggedIn') === 'true',
-  setUser: (user: User, isActive: boolean) => {
-    set({ user: { ...user, isActive } });
-    localStorage.setItem('user', JSON.stringify({ ...user, isActive }));
+  setUser: (user: User, isActive: boolean, role: string) => {
+    set({ user: { ...user, isActive, role } });
+    localStorage.setItem('user', JSON.stringify({ ...user, isActive, role }));
   },
   setIsLoggedIn: (isLoggedIn: boolean) => {
     set({ isLoggedIn });
@@ -63,6 +66,7 @@ export const useUserStore = create<UserSlice>((set) => ({
         joinDate: new Date(),
         totalWriteUps: 0,
         isActive: false,
+        role: '',
       },
       isLoggedIn: false,
     });
@@ -75,6 +79,14 @@ export const useUserStore = create<UserSlice>((set) => ({
     if (storedUser) {
       const user = JSON.parse(storedUser);
       localStorage.setItem('user', JSON.stringify({ ...user, isActive }));
+    }
+  },
+  setRole: (role: string) => {
+    set((state) => ({ user: { ...state.user, role } }));
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      localStorage.setItem('user', JSON.stringify({ ...user, role }));
     }
   },
 }));
