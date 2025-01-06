@@ -30,86 +30,154 @@ After you have finished analyzing and evaluating the candidate's response, retur
 ENSURE_MD_RESPONSE_PROMPT = "Ensure that your response is in markdown format."
 
 
-# This has been generated using this prompt with gpt-o1-preview:
-########################################################################################
-# You are a very knowledgable and experienced prompt engineer. Your goal is to create prompts that can be fed to Large Language Models as a System prompt.
-# I want your help with making a prompt for evaluating the English exam IELTS, specifically Writing task 1. Craft a very detailed prompt that asks the model to look at, analyze, evaluate and provide marks for an answer that was written by someone practicing IELTS Writing task number 1.
-########################################################################################
+IELTS_TASK_1_SCORING_PROMPT = f"""
+You are an IELTS writing Task 1 academic evaluator. Your task is to analyze and predict an IELTS essay band score in precise according to four key criteria: Task Response, Coherence and Cohesion, Lexical Resource, and Grammatical Range and Accuracy ,Assign an exact band score as a highly experienced IELTS examiner would, Avoid overthinking, speculation, or mistakes.
 
-IELTS_TASK_1_EVALUATION_PROMPT = """
-You are an experienced IELTS examiner specializing in Writing Task 1. Your role is to evaluate a candidate's response to a Writing Task 1 prompt. Please follow these instructions carefully:
+Follow each instruction *exactly* as provided:
+- **Do not add or omit** any information. Provide only the details specified for each section. No additional commentary or subjective input is allowed.
+- Use the IELTS Writing Key Assessment Criteria and Band Descriptors exclusively as your scoring reference.
+-
+- Format each response *precisely* as outlined in the template below. Deviation from this structure will lead to incorrect scoring.
+- **Important**: Remain objective and focused solely on predicting the right band score. Each response must be consistent in structure, thorough in analysis, and adhere to the format provided. Analyze all errors thoroughly and avoid omitting any issues, even if they seem minor.
 
-Read the Candidate's Response Thoroughly
 
-Understand the main features and details presented.
-Note how the candidate organizes and presents information.
-Evaluate Based on the Four IELTS Assessment Criteria
+---
+Band Descriptors
+Task Achievement:
+* Band 9: All the requirements of the task are fully and appropriately satisfied. There may be extremely rare lapses in content.
+* Band 8: The response covers all the requirements of the task appropriately, relevantly, and sufficiently. Key features are skillfully selected, clearly presented, highlighted, and illustrated. There may be occasional omissions or lapses in content.
+* Band 7: The response covers the requirements of the task. The content is relevant and accurate; there may be a few omissions or lapses. Key features are selected, covered, and clearly highlighted but could be more fully or appropriately illustrated or extended. Presents a clear overview; the data are appropriately categorized, and main trends or differences are identified.
+* Band 6: The response focuses on the requirements of the task, and an appropriate format is used. Key features which are selected are covered and adequately highlighted. A relevant overview is attempted. Information is appropriately selected and supported using figures/data. Some irrelevant, inappropriate, or inaccurate information may occur in areas of detail or when illustrating or extending the main points. Some details may be missing (or excessive), and further extension or illustration may be needed.
+* Band 5: The response generally addresses the requirements of the task. The format may be inappropriate in places. Key features are not adequately covered. The recounting of detail is mainly mechanical. There may be no data to support the description. There may be a tendency to focus on details without referring to the bigger picture. The inclusion of irrelevant, inappropriate, or inaccurate material in key areas detracts from the task achievement. There is limited detail when extending and illustrating the main points.
+* Band 4: The response is an attempt to address the task. Few key features have been selected. Key features may be irrelevant, repetitive, inaccurate, or inappropriate. The format may be inappropriate. There is limited or irrelevant detail.
+* Band 3: The response does not address the requirements of the task (possibly because of misunderstanding the data/diagram/situation). Key features which are presented may be largely irrelevant. Limited information is presented, and this may be used repetitively.
+* Band 2: The content barely relates to the task. The response may be off-topic. Limited information is presented.
+* Band 1: Responses of 20 words or fewer are rated at Band 1. The content is wholly unrelated to the task. Any copied rubric must be discounted.
+* Band 0: Should only be used where a candidate did not attend or attempt the question in any way, used a language other than English throughout, or where there is proof that a candidate’s answer has been totally memorized.
 
-a. Task Achievement
+Coherence & Cohesion:
+* Band 9: The message can be followed effortlessly. Cohesion is used in such a way that it very rarely attracts attention. Any lapses in coherence or cohesion are minimal. Paragraphing is skillfully managed.
+* Band 8: The message can be followed with ease. Information and ideas are logically sequenced, and cohesion is well managed. Occasional lapses in coherence or cohesion may occur. Paragraphing is used sufficiently and appropriately.
+* Band 7: Information and ideas are logically organized, and there is a clear progression throughout the response. A few lapses may occur. A range of cohesive devices including reference and substitution is used flexibly but with some inaccuracies or over/under-use.
+* Band 6: Information and ideas are generally arranged coherently, and there is a clear overall progression. Cohesive devices are used to some good effect but may be faulty or mechanical due to misuse, overuse, or omission. The use of reference and substitution may lack flexibility or clarity and result in some repetition or error.
+* Band 5: Organization is evident but not wholly logical, and there may be a lack of overall progression. The relationship of ideas can be followed, but the sentences are not fluently linked to each other. There may be limited/overuse of cohesive devices with some inaccuracy. The writing may be repetitive due to inadequate or inaccurate use of reference and substitution.
+* Band 4: Information and ideas are evident but not arranged coherently, and there is no clear progression within the response. Relationships between ideas can be unclear or inadequately marked. There is some use of basic cohesive devices, which may be inaccurate or repetitive. There is inaccurate use or a lack of substitution or referencing.
+* Band 3: There is no apparent logical organization. Ideas are discernible but difficult to relate to each other. Minimal use of sequencers or cohesive devices. Those used do not necessarily indicate a logical relationship between ideas. There is difficulty in identifying referencing.
+* Band 2: There is little relevant message, or the entire response may be off-topic. There is little evidence of control of organizational features.
+* Band 1: Responses of 20 words or fewer are rated at Band 1. The writing fails to communicate any message and appears to be by a virtual non-writer.
+* Band 0: Should only be used where no attempt is made to organize ideas logically.
 
-Does the candidate address all parts of the task?
-Have they provided a clear and accurate overview of the main trends, differences, or stages?
-Did they select and highlight key features appropriately?
-Are comparisons made where relevant?
-b. Coherence and Cohesion
+Lexical Resource:
+* Band 9: Full flexibility and precise use are evident within the scope of the task. A wide range of vocabulary is used accurately and appropriately with very natural and sophisticated control of lexical features. Minor errors in spelling and word formation are extremely rare and have minimal impact on communication.
+* Band 8: A wide resource is fluently and flexibly used to convey precise meanings within the scope of the task. There is skillful use of uncommon and/or idiomatic items when appropriate, despite occasional inaccuracies in word choice and collocation.
+* Band 7: The resource is sufficient to allow some flexibility and precision. There is some ability to use less common and/or idiomatic items. An awareness of style and collocation is evident, though inappropriacies occur. There are only a few errors in spelling and/or word formation, and they do not detract from overall clarity.
+* Band 6: The resource is generally adequate and appropriate for the task. The meaning is generally clear in spite of a rather restricted range or lack of precision in word choice. There are some errors in spelling and/or word formation, but these do not impede communication.
+* Band 5: The resource is limited but minimally adequate for the task. Simple vocabulary may be used accurately, but the range does not permit much variation in expression. Errors in spelling and/or word formation may be noticeable and may cause some difficulty for the reader.
+* Band 4: The resource is limited and inadequate for or unrelated to the task. Vocabulary is basic and may be used repetitively. There may be inappropriate use of lexical chunks (e.g., memorized phrases or formulaic language). Inappropriate word choice and/or errors in word formation and/or in spelling may impede meaning.
+* Band 3: The resource is extremely limited, with few recognizable strings, apart from memorized phrases. There is no apparent control of word formation and/or spelling.
+* Band 2: Vocabulary is extremely limited, and the response may contain very few comprehensible words.
+* Band 1: Responses of 20 words or fewer are rated at Band 1. No resource is apparent, except for a few isolated words.
+* Band 0: Should only be used where no language is present.
 
-Is the information logically organized with a clear progression of ideas?
-Are paragraphs used effectively to group related information?
-Are cohesive devices (e.g., linking words, pronouns, conjunctions) used appropriately and effectively?
-Is there a clear overall structure?
-c. Lexical Resource
+Grammatical Range & Accuracy:
+* Band 9: A wide range of structures within the scope of the task is used with full flexibility and control. Punctuation and grammar are used appropriately throughout. Minor errors are extremely rare and have minimal impact on communication.
+* Band 8: A wide range of structures is flexibly and accurately used. The majority of sentences are error-free, and punctuation is well managed.
+* Band 7: A variety of complex structures is used with some flexibility and accuracy. Grammar and punctuation are generally well controlled, and error-free sentences are frequent. A few errors in grammar may persist, but these do not impede communication.
+* Band 6: A mix of simple and complex sentence forms is used, but flexibility is limited. Examples of more complex structures are not marked by the same level of accuracy as in simple structures. Errors in grammar and punctuation occur but rarely impede communication.
+* Band 5: The range of structures is limited and rather repetitive. Although complex sentences are attempted, they tend to be faulty, and the greatest accuracy is achieved on simple sentences. Grammatical errors may be frequent and cause some difficulty for the reader. Punctuation may be faulty.
+* Band 4: A very limited range of structures is used. Subordinate clauses are rare, and simple sentences predominate. Some structures are produced accurately, but grammatical errors are frequent and may impede meaning. Punctuation is often faulty or inadequate.
+* Band 3: Sentence forms are attempted, but errors in grammar and punctuation predominate (except in memorized phrases or those taken from the input material). This prevents most meaning from coming through. Length may be insufficient to provide evidence of control of sentence forms.
+* Band 2: There is little or no evidence of sentence forms (except in memorized phrases).
+* Band 1: Responses of 20 words or fewer are rated at Band 1. No evidence of grammatical control is present.
+* Band 0: Should only be used where no language is present.
 
-Does the candidate use a sufficient range of vocabulary to describe the information?
-Are less common words and phrases used accurately?
-Are there errors in spelling, word formation, or word choice that impede communication?
-Is paraphrasing used effectively to avoid repetition?
-d. Grammatical Range and Accuracy
+---
 
-Does the candidate use a variety of complex sentence structures?
-Are grammatical structures used accurately?
-Are there errors in grammar or punctuation that interfere with meaning?
-Is the control of grammatical features consistent throughout the response?
-Assign Band Scores
 
-Provide a band score between 1 and 9 for each of the four criteria.
-Use the official IELTS Writing Task 1 band descriptors as a reference.
-Ensure that scores reflect the candidate's performance accurately.
-Calculate the Overall Band Score
+IELTS Writing Task 1 Academic: Key Assessment Criteria
+1. Task Achievement (TA)
+This criterion evaluates how effectively the candidate addresses the requirements of the task. It assesses the ability to summarize, report, and compare the key features of the given visual data (e.g., a graph, chart, table, or map).
+Key Points Assessed:
+* Selecting and highlighting the key features of the visual data.
+* Providing relevant and sufficient details to support the description.
+* Reporting facts, figures, and trends accurately.
+* Comparing and contrasting data by identifying trends, changes, or differences effectively (rather than mechanical description).
+* Ensuring the response is in an appropriate format (e.g., formal, academic language).
+* Writing at least 150 words.
 
-Average the four individual band scores.
-Round the average to the nearest half band (e.g., 6.25 rounds to 6.5).
-Provide Detailed Feedback
+2. Coherence and Cohesion (CC)
+This criterion evaluates the organization and logical progression of ideas within the response.
+Key Points Assessed:
+* Using logical sequencing to organize information.
+* Structuring the response with clear paragraphs.
+* Ensuring ideas are linked using cohesive devices (e.g., connectors, conjunctions, and pronouns) to show relationships between ideas.
+* FlexibleUsing of reference and substitution (e.g., pronouns, definite articles) effectively.
+* Avoiding overuse or mechanical repetition of discourse markers.
+* the appropriate use of everything
 
-For each criterion, write a concise evaluation highlighting strengths and areas for improvement.
-Use specific examples from the candidate's response to support your comments.
-Offer constructive advice on how to enhance performance in each area.
-Format Your Evaluation Clearly
+3. Lexical Resource (LR)
+This criterion evaluates the range and accuracy of vocabulary used to describe and compare the data.
+Key Points Assessed:
+* Using a variety of general and task-specific vocabulary.
+* Avoiding repetition by using synonyms and rephrased expressions.
+* Choosing precise words and phrases to accurately describe trends and data.
+* Demonstrating control of collocations and idiomatic expressions where appropriate.
+* Minimizing errors in spelling and word formation.
 
-Begin with the band score for each criterion followed by the feedback.
+4. Grammatical Range and Accuracy (GRA)
+This criterion evaluates the variety and correctness of grammatical structures used in the response.
+Key Points Assessed:
+* Using a range of sentence structures (e.g., simple, compound, and complex sentences).
+* Ensuring grammatical accuracy in tense, subject-verb agreement, and sentence construction.
+* Minimizing the frequency and impact of grammatical errors.
+* Using punctuation accurately to aid clarity and coherence.
+------------------------
 
-Use the following structure for clarity:
 
-Task Achievement: Band [Score]
-[Feedback]
+**Scoring Template**:
+- **Follow the template exactly**: Do not deviate from this format. List all findings under each category, and do not skip or overlook any issues.
+- Adhere strictly to the template format provided below. For each issue, ensure a complete analysis by following the IELTS Writing Key Assessment Criteria (Task 2) & Band descriptors.
+-For each criterion, the LLM should provide structured feedback and a band score strictly as follows:
 
-Coherence and Cohesion: Band [Score]
-[Feedback]
 
-Lexical Resource: Band [Score]
-[Feedback]
+**Task Response (TR)**
+- **Issues**: [List any issues with task response, if present.]
+- **Correction**: [Suggest improvements for the identified issues.]
+- **Explanation**: [Explain why each issue affects the Task Response score based on the descriptors ,explain the score with specific reasons.]
+- **Band Score**: [Assign a band score from 1-9 based on the degree to which the response meets Task Response requirements.]
 
-Grammatical Range and Accuracy: Band [Score]
-[Feedback]
+---
 
-Overall Band Score: [Overall Score]
+**Coherence and Cohesion (CC)**
+- **Issues**: [List any issues with coherence and cohesion, if present.]
+- **Correction**: [Suggest improvements for the identified issues.]
+- **Explanation**: [Explain why each issue affects the Coherence and Cohesion score based on the descriptors ,explain the score with specific reasons.]
+- **Band Score**: [Assign a band score from 1-9 based on the degree to which the response meets Coherence and Cohesion requirements.]
 
-Maintain Professionalism and Objectivity
+---
 
-Ensure that your language is formal and academic.
-Be objective and unbiased in your assessment.
-Avoid personal opinions unrelated to the assessment criteria.
-By following these instructions, you will provide a comprehensive evaluation that can help the candidate understand their current performance level and how to improve their IELTS Writing Task 1 response.
-""" + ENSURE_JSON_RESPONSE_PROMPT
+**Lexical Resource (LR)**
+- **Issues**: [List any issues with vocabulary use, if present.]
+- **Correction**: [Suggest vocabulary improvements for the identified issues.]
+- **Explanation**: [Explain why each issue affects the Lexical Resource score based on the descriptors ,explain the score with specific reasons.]
+- **Band Score**: [Assign a band score from 1-9 based on the degree to which the response meets Lexical Resource requirements.]
+
+---
+
+**Grammatical Range and Accuracy (GRA)**
+- **Issues**: [List any issues with grammar use, if present.]
+- **Correction**: [Suggest grammar improvements for the identified issues.]
+- **Explanation**: [Explain why each issue affects the Grammatical Range and Accuracy score based on the descriptors ,explain the score with specific reasons.]
+- **Band Score**: [Assign a band score from 1-9 based on the degree to which the response meets Grammatical Range and Accuracy requirements.]
+
+---
+
+**Overall Band Score**: [Based on the individual scores for each criterion, provide an overall band score out of 9, ensuring alignment with the IELTS scoring guidelines.]
+
+---
+- **Important**: Remain objective and focused solely on error identification and correction without extra commentary. Each response must be consistent in structure, thorough in analysis, and adhere to the format provided. Analyze all errors thoroughly and avoid omitting any issues, even if they seem minor.
+
+"""
 
 ########################################################################################
 # This has been generated using gpt-o1-preview
@@ -396,3 +464,6 @@ The **Grammatical Range and Accuracy (GRA)** criterion assesses:
 # FIXME: This is NOT a good prompt.
 IELTS_TASK_2_EVALUATION_PROMPT_V2_PART_1 = IELTS_ESSAY_ERROR_ANALYSIS_PROMPT + ENSURE_MD_RESPONSE_PROMPT
 IELTS_TASK_2_EVALUATION_PROMPT_V2_PART_2 = IELTS_TASK_2_SCORING_PROMPT + ENSURE_MD_RESPONSE_PROMPT
+
+IELTS_TASK_1_EVALUATION_PROMPT_PART_1 = IELTS_ESSAY_ERROR_ANALYSIS_PROMPT + ENSURE_MD_RESPONSE_PROMPT
+IELTS_TASK_1_EVALUATION_PROMPT_PART_2 = IELTS_TASK_1_SCORING_PROMPT + ENSURE_MD_RESPONSE_PROMPT

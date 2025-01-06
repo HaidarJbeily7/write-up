@@ -1,9 +1,14 @@
 import json
 import logging
-
 from .queries import add_new_topics, get_filtered_topics, add_new_topics, get_filtered_topics, get_topic_from_submission
 
-from .prompts import IELTS_TASK_1_EVALUATION_PROMPT, IELTS_TASK_2_EVALUATION_PROMPT, IELTS_TASK_2_EVALUATION_PROMPT_V2_PART_1, IELTS_TASK_2_EVALUATION_PROMPT_V2_PART_2
+from .prompts import (
+    IELTS_TASK_1_EVALUATION_PROMPT_PART_1,
+    IELTS_TASK_1_EVALUATION_PROMPT_PART_2,
+    IELTS_TASK_2_EVALUATION_PROMPT,
+    IELTS_TASK_2_EVALUATION_PROMPT_V2_PART_1,
+    IELTS_TASK_2_EVALUATION_PROMPT_V2_PART_2
+)
 from .models import SubmissionEvaluation, SubmissionEvaluationV2, Topic, ExamType, TopicSubmission
 from ...common.db_engine import db_engine
 from typing import List
@@ -38,8 +43,9 @@ def get_topics_from_file(exam_type: ExamType, task_number: int) -> List[Topic]:
                 question=row['question'],
                 category=row['category'],
                 exam_type=exam_type,
-                task_number=row.get("task_number"),
+                task_number=task_number,
                 difficulty_level=row.get("difficulty_level"),
+                image_name=row.get("image_path"),
             )
             topics.append(topic)
 
@@ -95,7 +101,7 @@ def initialize_topics():
         total_added_topics = 0
         for exam_type, task_number in [
             # TODO: Uncomment when we have files for these tasks
-            # (ExamType.IELTS, 1),
+            (ExamType.IELTS, 1),
             (ExamType.IELTS, 2),
             # (ExamType.TOEFL, 1),
             # (ExamType.TOEFL, 2)
@@ -209,7 +215,7 @@ def evaluate_submission_v2(submission: TopicSubmission) -> SubmissionEvaluationV
 
         match topic.exam_type, topic.task_number:
             case ExamType.IELTS, 1:
-                evaluation_prompt = IELTS_TASK_1_EVALUATION_PROMPT
+                evaluation_prompt = IELTS_TASK_1_EVALUATION_PROMPT_PART_1, IELTS_TASK_1_EVALUATION_PROMPT_PART_2
             case ExamType.IELTS, 2:
                 evaluation_prompt = IELTS_TASK_2_EVALUATION_PROMPT_V2_PART_1, IELTS_TASK_2_EVALUATION_PROMPT_V2_PART_2
             case _:

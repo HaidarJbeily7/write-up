@@ -22,6 +22,7 @@ class Topic(SQLModel, table=True):
     difficulty_level: Optional[int] = Field(default=None)
     created_by: Optional[str] = Field(default=None)
     topic_metadata: Optional[dict] = Field(default=None, sa_type=JSON)
+    image_name: Optional[str] = Field(default=None)
 
     class Config:
         json_schema_extra = {
