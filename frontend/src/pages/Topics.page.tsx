@@ -12,7 +12,7 @@ export function TopicsPage() {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
-  const [examType, setExamType] = useState<string | null>(null);
+  const [taskNumber, setTaskNumber] = useState<number | null>(null);
   const [category, setCategory] = useState<string | null>(null);
 
   const pageSize = 4;
@@ -24,7 +24,7 @@ export function TopicsPage() {
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/v2/topics/`, {
         params: {
           size: pageSize,
-          exam_type: examType === 'Task 1' ? 'TOEFL' : 'IELTS',
+          task_number: taskNumber,
           category,
           page: pagination.active === 0 ? 1 : pagination.active,
         },
@@ -40,7 +40,7 @@ export function TopicsPage() {
 
   useEffect(() => {
     fetchTopics();
-  }, [pagination.active, examType, category]);
+  }, [pagination.active, taskNumber, category]);
 
   return (
     <Flex dir="row" mih="100vh">
@@ -54,12 +54,12 @@ export function TopicsPage() {
           </Title>
           <Flex mb="lg" gap="md" justify="center">
             <Select
-              label="Task Category"
+              label="Task Number"
               placeholder="Select Task Category"
               data={['Task 1', 'Task 2']}
-              value={examType}
+              value={['Task 1', 'Task 2'].at((taskNumber ?? 1) - 1) ?? null}
               onChange={(value) => {
-                setExamType(value);
+                setTaskNumber(value === 'Task 1' ? 1 : 2);
                 pagination.setPage(1);
               }}
               clearable

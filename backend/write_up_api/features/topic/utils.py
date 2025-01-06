@@ -45,7 +45,7 @@ def get_topics_from_file(exam_type: ExamType, task_number: int) -> List[Topic]:
                 exam_type=exam_type,
                 task_number=task_number,
                 difficulty_level=row.get("difficulty_level"),
-                image_name=row.get("image_path"),
+                image_name=row.get("image_name"),
             )
             topics.append(topic)
 

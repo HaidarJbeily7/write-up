@@ -5,4 +5,6 @@ export type Topic = {
   exam_type: string;
   id: string;
   topic_metadata: { task_type: string };
+  task_number: number;
+  image_name: string;
 };

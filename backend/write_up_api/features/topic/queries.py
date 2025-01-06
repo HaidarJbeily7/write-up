@@ -72,7 +72,7 @@ def get_filtered_topics_paginated(
             if created_by:
                 query = query.where(Topic.created_by == created_by)
             else:
-                query = query.where(Topic.created_by == "")
+                query = query.where((Topic.created_by == None) | (Topic.created_by == ""))
             topics = paginate(session, query, params=params)
             return topics
     except Exception as e:
