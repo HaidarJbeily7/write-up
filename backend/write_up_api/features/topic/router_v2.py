@@ -36,12 +36,14 @@ topic_router_v2: APIRouter = APIRouter(tags=["topic_v2"])
 async def get_topics(
     exam_type: Optional[ExamType] = Query(None),
     category: Optional[str] = Query(None),
+    task_number: Optional[int] = Query(None, ge=1, le=2),
     difficulty_level: Optional[int] = Query(None, ge=1, le=10),
     params: Params = Depends(),
 ) -> Page[Topic]:
     return get_filtered_topics_paginated(
         exam_type=exam_type,
         category=category,
+        task_number=task_number,
         difficulty_level=difficulty_level,
         params=params,
     )
