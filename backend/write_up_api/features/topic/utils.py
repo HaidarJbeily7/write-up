@@ -50,13 +50,11 @@ def get_topics_from_file(exam_type: ExamType, task_number: int) -> List[Topic]:
             topics.append(topic)
 
     except FileNotFoundError:
-        logger.error(f"Topics file not found for {exam_type.value} { \
-                     task_number}, tried path: {file_path}, skipping...")
+        logger.error(f"Topics file not found for {exam_type.value} {task_number}, tried path: {file_path}, skipping...")
         return []
         # TODO: Once we have files for all exams, we should raise an error here
     except pd.errors.EmptyDataError:
-        logger.error(f"Topics file is empty for {exam_type.value} { \
-                     task_number}, tried path: {file_path}, skipping...")
+        logger.error(f"Topics file is empty for {exam_type.value} {task_number}, tried path: {file_path}, skipping...")
         raise
     except Exception as e:
         logger.error(f"Error reading topics file {file_path}: {e}")
@@ -88,12 +86,10 @@ def populate_topics_from_file(exam_type: ExamType, task_number: int) -> int:
 
     if len(new_topics) > 0:
         add_new_topics(new_topics)
-        logger.info(f"Added {len(new_topics)} new topics to the database for { \
-                    exam_type.value} Task {task_number}.")
+        logger.info(f"Added {len(new_topics)} new topics to the database for {exam_type.value} Task {task_number}.")
         return len(new_topics)
     else:
-        logger.info(f"No new topics to add to the database for { \
-                    exam_type.value} Task {task_number}.")
+        logger.info(f"No new topics to add to the database for {exam_type.value} Task {task_number}.")
         return 0
 
 def initialize_topics():
@@ -219,8 +215,7 @@ def evaluate_submission_v2(submission: TopicSubmission) -> SubmissionEvaluationV
             case ExamType.IELTS, 2:
                 evaluation_prompt = IELTS_TASK_2_EVALUATION_PROMPT_V2_PART_1, IELTS_TASK_2_EVALUATION_PROMPT_V2_PART_2
             case _:
-                raise ValueError(f"Unsupported exam type or task number: {
-                                 topic.exam_type.value} {topic.task_number}")
+                raise ValueError(f"Unsupported exam type or task number: {topic.exam_type.value} {topic.task_number}")
 
         load_dotenv(override=True)
 
