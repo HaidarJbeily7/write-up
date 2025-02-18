@@ -22,8 +22,8 @@ logging.basicConfig(
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    from .features.topic.utils import initialize_topics
-    initialize_topics()
+    # from .features.topic.utils import initialize_topics
+    # initialize_topics()
     yield
     # Shutdown
 
