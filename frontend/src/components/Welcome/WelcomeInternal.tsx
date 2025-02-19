@@ -27,8 +27,7 @@ export function WelcomeInternal({ navigate }: { navigate: (path: string) => void
           </Text>
         </Title>
         <Text c="dimmed" ta="center" size="lg" maw={580} mx="auto" mt="xl">
-          Unleash your creativity and share your thoughts with the world. WriteUp is your platform
-          for seamless writing, collaboration, and publishing.
+          Your adaptive space to practice writing for IELTS, TOEFL, and Goethe Standard tests.
         </Text>
         <Group justify="center" mt={50}>
           <Button size="lg" onClick={() => navigate('/dashboard')} bg="#816CA5">
