@@ -6,15 +6,15 @@ import {
   Button,
   Container,
   em,
+  FileButton,
   Flex,
+  Group,
   Loader,
   LoadingOverlay,
   Paper,
   Text,
   Textarea,
   Title,
-  FileButton,
-  Group,
 } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { Topic } from '@/components/Topics/types';
@@ -130,7 +130,9 @@ export function AnswerPage() {
   };
 
   const handleImageUpload = async (file: File | null) => {
-    if (!file) {return;}
+    if (!file) {
+      return;
+    }
     setOcrLoading(true);
     try {
       const formData = new FormData();
@@ -176,7 +178,10 @@ export function AnswerPage() {
         loaderProps={{ children: 'The AI is checking your Answer...' }}
       />
       <LoadingOverlay visible={saveLoading} loaderProps={{ children: 'Saving your answer...' }} />
-      <LoadingOverlay visible={ocrLoading} loaderProps={{ children: 'Extracting text from image...' }} />
+      <LoadingOverlay
+        visible={ocrLoading}
+        loaderProps={{ children: 'Extracting text from image...' }}
+      />
       <Paper withBorder shadow="md" p="xl" radius="md" mt="lg">
         <Title order={1} mb="md">
           {topic.category}

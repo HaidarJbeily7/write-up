@@ -24,7 +24,7 @@ export function BurgerMenu() {
         setOpened(false);
       }}
     >
-      <item.icon className={styles.icon} stroke={1.5} /> {item.label}
+      <img src={item.icon} alt={item.label} className={styles.icon} /> {item.label}
     </a>
   ));
 

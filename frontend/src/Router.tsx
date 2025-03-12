@@ -1,6 +1,5 @@
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import { AdminPage } from './pages/Admin.page';
-import { DashboardPage } from './pages/Dashboard.page';
 import { HomePage } from './pages/Home.page';
 import { MyTopicsPage } from './pages/MyTopics';
 import { PaymentSuccessPage } from './pages/PaymentSuccess.page';
@@ -10,6 +9,7 @@ import { SubscriptionPage } from './pages/Subscription.page';
 import { TopicsPage } from './pages/Topics.page';
 import { AnswerPage } from './pages/v2/Answer.page';
 import { SigninPage } from './pages/v2/Auth.page';
+import { DashboardPage } from './pages/v2/Dashboard.page';
 import { HistoryPage } from './pages/v2/History.page';
 import { ResultPage } from './pages/v2/Result.page';
 import { VerifyLoginPage } from './pages/VerifyLogin.page';
