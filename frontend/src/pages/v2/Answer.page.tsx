@@ -1,22 +1,24 @@
 import { useEffect, useState } from 'react';
+import { IconChevronRight } from '@tabler/icons-react';
 import axios from 'axios';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import {
+  Anchor,
   Button,
   Container,
-  em,
-  FileButton,
+  Divider,
   Flex,
+  Grid,
   Group,
   Loader,
   LoadingOverlay,
-  Paper,
   Text,
-  Textarea,
   Title,
 } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
+import { AnswerInput } from '@/components/Answer/AnswerInput';
+import { QuestionInfo } from '@/components/Answer/QuestionInfo';
+import { Navbar } from '@/components/Navbar/Navbar';
 import { Topic } from '@/components/Topics/types';
 
 export function AnswerPage() {
@@ -30,7 +32,6 @@ export function AnswerPage() {
   const [answer, setAnswer] = useState('');
   const [ocrLoading, setOcrLoading] = useState(false);
   const navigate = useNavigate();
-  const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 
   useEffect(() => {
     const fetchTopic = async () => {
@@ -172,72 +173,68 @@ export function AnswerPage() {
   }
 
   return (
-    <Container size="sm" mb="xl" h="100vh" pt={40}>
-      <LoadingOverlay
-        visible={answerLoading}
-        loaderProps={{ children: 'The AI is checking your Answer...' }}
-      />
-      <LoadingOverlay visible={saveLoading} loaderProps={{ children: 'Saving your answer...' }} />
-      <LoadingOverlay
-        visible={ocrLoading}
-        loaderProps={{ children: 'Extracting text from image...' }}
-      />
-      <Paper withBorder shadow="md" p="xl" radius="md" mt="lg">
-        <Title order={1} mb="md">
-          {topic.category}
-        </Title>
-        <Text size="lg" fw={500} mb="xs">
-          Exam Type: {topic.exam_type}
-        </Text>
-        <Text size="md" mt="md" fw={700}>
-          Question:
-        </Text>
-        <Text size="md">{topic.question}</Text>
-      </Paper>
+    <Grid>
+      <Grid.Col
+        span="content"
+        style={{
+          position: 'sticky',
+          top: 0,
+          left: 0,
+          height: '100vh',
 
-      <Paper withBorder shadow="md" p="xl" radius="md" mt="lg">
-        <Group mb="md">
-          <Title order={3}>Your Answer</Title>
-          <FileButton onChange={handleImageUpload} accept="image/*">
-            {(props) => (
-              <Button variant="light" {...props}>
-                Scan Answer from Image
-              </Button>
-            )}
-          </FileButton>
-        </Group>
-        <Textarea
-          placeholder="Write your answer here..."
-          value={answer}
-          onChange={(e) => handleInputChange(e.target.value)}
-          minRows={4}
-          maxRows={8}
-          description={`${answer.trim() === '' ? 0 : answer.trim().split(/\s+/).length} words`}
-          required
-          resize="vertical"
-          styles={{
-            input: {
-              height: '240px',
-            },
-          }}
+          zIndex: 100,
+        }}
+      >
+        <Navbar />
+      </Grid.Col>
+      <Grid.Col span="auto">
+        <LoadingOverlay
+          visible={answerLoading}
+          loaderProps={{ children: 'The AI is checking your Answer...' }}
         />
-        <Flex mt="md" gap={8} direction={isMobile ? 'column' : 'row'}>
-          <Button onClick={() => handleAnswer()} disabled={answer.length === 0} fullWidth>
-            Submit Answer For Evaluation
-          </Button>
-          <Button
-            variant="outline"
-            onClick={async () => {
-              await handleSaveWithoutSubmit();
-              navigate('/history');
-            }}
-            disabled={answer.length === 0}
-            fullWidth
-          >
-            Save to Continue Later
-          </Button>
-        </Flex>
-      </Paper>
-    </Container>
+        <LoadingOverlay visible={saveLoading} loaderProps={{ children: 'Saving your answer...' }} />
+        <LoadingOverlay
+          visible={ocrLoading}
+          loaderProps={{ children: 'Extracting text from image...' }}
+        />
+        {/* Header Section */}
+        <Container miw="100%" p="2rem">
+          <Flex justify="space-between" align="center">
+            <Group>
+              <Anchor href="/dashboard" fw={400} c="#181D27" underline="never">
+                Task2
+              </Anchor>
+              <IconChevronRight size={24} color="#00000066" />
+              <Text fw={800}>Practice</Text>
+            </Group>
+            <Button variant="outline" color="#816CA5" radius="md">
+              Support
+            </Button>
+          </Flex>
+        </Container>
+        <Divider />
+
+        {/* Page Content */}
+        <Title order={1} mt="xl" mb="md" ta="center">
+          Let’s Practice
+        </Title>
+        <Text c="#717680" ta="center" size="md" maw={580} mx="auto">
+          Challenge yourself and don’t give up!
+        </Text>
+
+        <Container size="lg">
+          <QuestionInfo topic={topic} />
+
+          <AnswerInput
+            answer={answer}
+            handleInputChange={handleInputChange}
+            handleImageUpload={handleImageUpload}
+            handleAnswer={handleAnswer}
+            handleSaveWithoutSubmit={handleSaveWithoutSubmit}
+            isMobile={window.innerWidth < 768}
+          />
+        </Container>
+      </Grid.Col>
+    </Grid>
   );
 }
