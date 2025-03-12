@@ -1,31 +1,24 @@
 import { useNavigate } from 'react-router-dom';
-import { Paper, Text, Title, Image } from '@mantine/core';
+import { Image, Paper, Text, Title } from '@mantine/core';
 import { Topic } from './types';
 
 interface TopicCardGridProps {
   topic: Topic;
 }
 
-
-const Footer = ({topic}: TopicCardGridProps) => {
+const Footer = ({ topic }: TopicCardGridProps) => {
   if (topic.task_number === 1) {
     return <Image src={`/images/${topic.image_name}`} alt="Task 1" width={100} height={200} />;
   }
-const truncatedQuestion =
-  topic.question.length > 200
-    ? `${topic.question.slice(0, 198)}...`
-    : topic.question
+  const truncatedQuestion =
+    topic.question.length > 200 ? `${topic.question.slice(0, 198)}...` : topic.question;
 
   return (
-    <div
-      style={{ maxHeight: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}
-    >
+    <div style={{ maxHeight: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
       <Text>{truncatedQuestion}</Text>
     </div>
   );
-
 };
-
 
 export default function TopicCard({ topic }: TopicCardGridProps) {
   const navigate = useNavigate();
