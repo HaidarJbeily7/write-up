@@ -1,17 +1,12 @@
 import { useState } from 'react';
-import { IconLogout } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
-import { Code, Group, Image, Text, useMantineColorScheme } from '@mantine/core';
-import { useUserStore } from '@/store/user';
-import { ColorSchemeToggle } from '../ColorSchemeToggle/ColorSchemeToggle';
+import { Group, Image } from '@mantine/core';
 import { data } from './data';
 import classes from './Navbar.module.css';
 
 export function Navbar() {
   const [active, setActive] = useState('Home');
   const navigate = useNavigate();
-  const { setIsLoggedIn } = useUserStore();
-  const { colorScheme } = useMantineColorScheme();
 
   const links = data.map((item) => (
     <a
@@ -25,7 +20,7 @@ export function Navbar() {
         navigate(item.link);
       }}
     >
-      <item.icon className={classes.linkIcon} stroke={1.5} />
+      <img src={item.icon} alt={item.label} className={classes.linkIcon} width={24} height={24} />
       <span>{item.label}</span>
     </a>
   ));
@@ -35,35 +30,28 @@ export function Navbar() {
       <div className={classes.navbarMain}>
         <Group className={classes.header} justify="space-between" align="center">
           <div style={{ display: 'flex', alignItems: 'center', marginLeft: '14' }}>
-            <Image
-              src={colorScheme === 'dark' ? 'images/logo-white.png' : 'images/logo-black.png'}
-              alt="WriteUp Logo"
-              style={{ width: '40px', height: '40px', marginLeft: 12 }}
-            />
-            <Text size="lg" fw={500}>
-              riteUp
-            </Text>
+            <Image src="images/logos/writeup-logo.svg" alt="WriteUp Logo" />
           </div>
-          <Code fw={700}>v1.0.0</Code>
         </Group>
         {links}
       </div>
 
       <div className={classes.footer}>
-        <Group className={classes.link} justify="space-between" align="center">
-          <ColorSchemeToggle />
-        </Group>
-
         <a
-          href="#"
           className={classes.link}
+          href="/notifications"
           onClick={(event) => {
             event.preventDefault();
-            setIsLoggedIn(false);
           }}
         >
-          <IconLogout className={classes.linkIcon} stroke={1.5} />
-          <span>Logout</span>
+          <img
+            src="icons/notifications-icon.svg"
+            alt="notifications icons"
+            className={classes.linkIcon}
+            width={24}
+            height={24}
+          />
+          <span>Notifications</span>
         </a>
       </div>
     </nav>

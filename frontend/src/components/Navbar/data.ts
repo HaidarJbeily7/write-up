@@ -1,17 +1,6 @@
-import {
-  IconBook,
-  IconBook2,
-  IconCreditCard,
-  IconDashboard,
-  IconHistory,
-  IconUser,
-} from '@tabler/icons-react';
-
 export const data = [
-  { link: '/dashboard', label: 'Dashboard', icon: IconDashboard },
-  { link: '/topics', label: 'Topics', icon: IconBook },
-  { link: '/my-topics', label: 'My Topics', icon: IconBook2 },
-  { link: '/profile', label: 'Profile', icon: IconUser },
-  { link: '/history', label: 'History', icon: IconHistory },
-  { link: '/subscription', label: 'Subscription', icon: IconCreditCard },
+  { link: '/dashboard', label: 'Writing', icon: 'icons/writing-icon.svg' },
+  { link: '/progress', label: 'My Progress', icon: 'icons/progress-icon.svg' },
+  { link: '/notebook', label: 'Notebook', icon: 'icons/notepad-icon.svg' },
+  { link: '/history', label: 'History', icon: 'icons/history-icon.svg' },
 ];
