@@ -126,7 +126,7 @@ def evaluate_submission(submission: TopicSubmission) -> SubmissionEvaluation:
 
         match topic.exam_type, topic.task_number:
             case ExamType.IELTS, 1:
-                evaluation_prompt = IELTS_TASK_1_EVALUATION_PROMPT
+                raise ValueError("IELTS Task 1 is not supported for evaluation")
             case ExamType.IELTS, 2:
                 evaluation_prompt = IELTS_TASK_2_EVALUATION_PROMPT
             case _:
@@ -283,7 +283,19 @@ def evaluate_submission_v2(submission: TopicSubmission) -> SubmissionEvaluationV
                 ]
             )
 
-            message = message + "\n\n--- \n\n" + response.choices[0].message.content
+            # Combine both responses and format as JSON string
+            import json
+            
+            # Extract JSON content from both responses
+            part1_json = json.loads(message.split("```json")[1].split("```")[0])
+            part2_json = json.loads(response.choices[0].message.content.split("```json")[1].split("```")[0])
+            
+            # Merge the JSON objects
+            combined_json = {"error_analysis": part1_json, "scoring": part2_json}
+            
+            # Convert to JSON string
+            message = json.dumps(combined_json)
+            print(message)
             return SubmissionEvaluationV2(submission_id=submission.id, evaluation=message)
 
 
